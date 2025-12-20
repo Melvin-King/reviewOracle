@@ -117,7 +117,8 @@ class EVWPipeline:
         synthesis_config = self.config.get('synthesis', {})
         self.synthesis_agent = SynthesisAgent(
             accept_threshold=synthesis_config.get('accept_threshold', 0.6),
-            topics=synthesis_config.get('topics', ["Novelty", "Experiments", "Writing", "Significance", "Reproducibility"])
+            topics=synthesis_config.get('topics', ["Novelty", "Experiments", "Writing", "Significance", "Reproducibility"]),
+            use_10_point_scale=synthesis_config.get('use_10_point_scale', True)  # 默认使用10分制
         )
     
     def step1_extraction(self, paper_id: str) -> List[Dict]:
@@ -173,11 +174,13 @@ class EVWPipeline:
             return {}
         
         # 2.3. 提取论文sections（用于section过滤）
-        from ..data.pdf_parser import PDFParser
+        from .data.pdf_parser import PDFParser
         pdf_parser = PDFParser()
         paper_sections = pdf_parser.extract_sections(paper_text)
         if paper_sections:
-            print(f"[INFO] Extracted {len(paper_sections)} sections: {list(paper_sections.keys())}")
+            # 只打印section数量，避免编码问题
+            section_names = [name[:50] for name in list(paper_sections.keys())[:10]]  # 只显示前10个，截断长名称
+            print(f"[INFO] Extracted {len(paper_sections)} sections")
         
         # 2.5. 如果是 Embedding RAG 或 Hybrid RAG，构建或加载索引
         if isinstance(self.rag, EmbeddingRAG) or isinstance(self.rag, HybridRAG):

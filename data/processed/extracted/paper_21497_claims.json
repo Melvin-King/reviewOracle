@@ -1,0 +1,306 @@
+[
+  {
+    "id": "R1-C1",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "论文对情境学习及其在Transformer中的工作原理提出了新颖的见解。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "作者提出了对先前关于grokking工作中探索的模运算任务的泛化，定义的任务结构更丰富，能够分析分布内泛化和分布外泛化。"
+  },
+  {
+    "id": "R1-C2",
+    "topic": "Writing",
+    "sentiment": "Positive",
+    "statement": "论文写得相当好且清晰。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "评审人认为论文写作清晰。"
+  },
+  {
+    "id": "R1-C3",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "超越标准线性回归任务来研究情境学习是很好的。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "评审人赞赏作者超越了标准线性回归任务。"
+  },
+  {
+    "id": "R1-C4",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "实证结果是主要卖点，结果令人喜欢。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "模型表示与本文设置相关概念的可视化相当漂亮：圆圈中的圆圈看起来很有趣，并且可以说出乎意料。"
+  },
+  {
+    "id": "R1-C5",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "缩放结果本身也很有趣。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "评审人认为缩放结果有趣。"
+  },
+  {
+    "id": "R1-C6",
+    "topic": "Related Work",
+    "sentiment": "Negative",
+    "statement": "相关工作相对稀疏，需要更详细的相关工作部分。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "评审人指出该主题已有丰富文献，并列举了多个相关工作的具体例子（如Kirsch等人、Ahuja和Lopez-Paz、Ramesh等人、Kumar等人、Reddy的工作），认为需要更多强调和讨论。"
+  },
+  {
+    "id": "R1-C7",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "question": "在2D几何相当丰富的情况下，PCA能捕捉到它有点令人惊讶。需要进行预处理吗？两个投影成分解释了多少方差？如果有其他未显示但方差很大的成分，它们编码了什么——可以尝试3D图吗？",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R1-C8",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "question": "MLP的作用是什么？鉴于机械解释只关注注意力，MLP的作用不明确。建议尝试两个实验：(i) 训练仅注意力模型以查看MLP是否必要；(ii) 在模型每个块的注意力和MLP层面进行PCA分析以揭示表示的几何结构。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "评审人提出了具体的实验建议，并给出了对实验结果的预期（例如，模型可能将任务向量“内化”并记录在MLP中）。"
+  },
+  {
+    "id": "R1-C9",
+    "topic": "Limitations",
+    "sentiment": "Positive",
+    "statement": "局限性得到了相当充分的讨论。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "评审人认为局限性讨论充分。"
+  },
+  {
+    "id": "R2-C1",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "This work introduces a new algorithmic dataset (with modular arithmetic tasks) that force models to learn a variety of tasks.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The dataset is described as using modular arithmetic tasks."
+  },
+  {
+    "id": "R2-C2",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "The work finds that when the number of tasks goes from small to large, the model transitions from memorization to generalization.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "This is a key finding presented in the summary and strengths section."
+  },
+  {
+    "id": "R2-C3",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "This work has many interesting experiments.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The reviewer states a general positive opinion on the experiments."
+  },
+  {
+    "id": "R2-C4",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "I found Section 5.2 (Attention Heads Implement Essential Skills) pretty interesting.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer specifically cites Section 5.2 as interesting."
+  },
+  {
+    "id": "R2-C5",
+    "topic": "Experiments",
+    "sentiment": "Negative",
+    "statement": "The definition of task diversity is not well defined. Is the number of pretraining tasks truly indicative of task diversity?",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer questions the core assumption linking number of tasks to diversity."
+  },
+  {
+    "id": "R2-C6",
+    "topic": "Experiments",
+    "sentiment": "Negative",
+    "statement": "The paper claims that for larger models, early stopping is necessary (line 52). While I appreciate that the authors used GPT-like architectures to reflect realistic settings, the architectures in the experiments are not that large.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer cites line 52 and contrasts the claim with the scale of the models used in the experiments."
+  },
+  {
+    "id": "R2-C7",
+    "topic": "Experiments",
+    "sentiment": "Negative",
+    "statement": "Even amongst popular open source models, the smallest are usually around 7B parameters.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer provides a specific parameter count (7B) to argue the experimental models are not large."
+  },
+  {
+    "id": "R2-C8",
+    "topic": "Significance",
+    "sentiment": "Neutral",
+    "statement": "Many works in the continual learning and meta learning literature suggest that training on multiple tasks at once leads to better generalization. Perhaps it is worth including brief discussion on the connections between this point and the model’s ability to generalize ood which is predominantly determined by the number of pre-training tasks.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer cites related literature (continual learning, meta learning) and suggests a discussion to connect findings."
+  },
+  {
+    "id": "R2-C9",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "Since multiplication can be viewed as repeated addition, isn’t skill 2 an extension of skill 3 (or can even be viewed as skill 3 composed with itself multiple times)?",
+    "substantiation_content": "The reviewer poses a conceptual question about the relationship between defined skills (2 and 3).",
+    "substantiation_type": "Specific_Citation"
+  },
+  {
+    "id": "R2-C10",
+    "topic": "Significance",
+    "sentiment": "Neutral",
+    "statement": "Is hierarchy of skills important here?",
+    "substantiation_type": "None",
+    "substantiation_content": "The reviewer poses a general question without providing specific evidence from the paper."
+  },
+  {
+    "id": "R2-C11",
+    "topic": "Limitations",
+    "sentiment": "Neutral",
+    "statement": "As acknowledged by the authors, this work is limited to particular algorithmic datasets.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The reviewer notes this limitation is acknowledged by the authors themselves."
+  },
+  {
+    "id": "R4-C1",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "论文提供了一个有说服力的'任务分解假说'。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "该假说得到了消融研究和各种实验的良好支持。"
+  },
+  {
+    "id": "R4-C2",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "对注意力头的白盒分析为所提出的解释提供了令人信服的证据。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "白盒分析提供了令人信服的证据。"
+  },
+  {
+    "id": "R4-C3",
+    "topic": "Significance",
+    "sentiment": "Positive",
+    "statement": "论文很好地解释了许多与组合式上下文能力涌现相关的重要趋势和概念。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "解释了重要趋势和概念。"
+  },
+  {
+    "id": "R4-C4",
+    "topic": "Writing",
+    "sentiment": "Positive",
+    "statement": "论文易于理解，展示得很好。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C5",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "实验设计良好，为论点提供了有力的支持。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "图5的结果很酷。第5节讨论的技能分解很棒。注意力头中的清晰模式很好地验证了它。"
+  },
+  {
+    "id": "R4-C6",
+    "topic": "Experiments",
+    "sentiment": "Negative",
+    "statement": "关于学习动态（即准确率、损失、表征、能力、注意力模式等在训练期间如何逐渐演变）的讨论将使论文更有力。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "涌现能力或顿悟通常指的是模型'卡在'非泛化区域然后突然获得泛化能力的现象。"
+  },
+  {
+    "id": "R4-C7",
+    "topic": "Reproducibility",
+    "sentiment": "Negative",
+    "statement": "本文的任务和批次样本选择有许多约束（例如矩形规则、每个批次中样本的平衡数量等）。然而，实际系统通常无法严格满足所有这些假设。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "任务和批次样本选择有许多约束。"
+  },
+  {
+    "id": "R4-C8",
+    "topic": "Reproducibility",
+    "sentiment": "Neutral",
+    "statement": "对这些假设如何影响泛化能力进行更详细的分析将为实际系统提供更多见解。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C9",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "论文第147行声称'随着O.O.D.性能的提高，预训练性能同时下降'。然而，很难从图3-a面板1中读出这一信息。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "很难从图3-a面板1中读出这一信息。也许使用不同的颜色映射或在色块上添加数字会有所帮助。"
+  },
+  {
+    "id": "R4-C10",
+    "topic": "Writing",
+    "sentiment": "Neutral",
+    "statement": "方程2有点难以理解。它如何与 $z = ax+by$ 相关联？",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "方程2有点难以理解。"
+  },
+  {
+    "id": "R4-C11",
+    "topic": "Writing",
+    "sentiment": "Neutral",
+    "statement": "最好在使用前定义 $GF(p)$，即伽罗瓦域。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C12",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "图6的结果是来自 $d=2$ 还是 $d=4$？",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "可以在附录中找到 $d=2$ 的所有8个注意力头的图，那么 $d=4$ 的情况呢？"
+  },
+  {
+    "id": "R4-C13",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "看看浅层中是否存在后期层中的模式（即注意力集中在不同的 $z_i$ 上），反之亦然，可能会有所帮助。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C14",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "论文第264行声称该模式取决于 $(a,b)$，但从图6b中很难看出这一点。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "很难从图6b中读出该模式取决于 $(a,b)$。"
+  },
+  {
+    "id": "R4-C15",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "是否有可能在权重空间（例如注意力权重、读出层等）中找到与 $c_1, c_2$ 高度相关的特定值？",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C16",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "如果可能，那么模型首先学习技能2（缩放每个示例）然后学习技能3（加权组合不同示例）的假说将得到进一步验证。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R4-C17",
+    "topic": "Novelty",
+    "sentiment": "Neutral",
+    "statement": "在顿悟或涌现能力设置中研究的OOD设置与组合泛化和系统泛化密切相关。",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "在相关工作中讨论它们会很有帮助，这里列出了一些：[1] Schott, Lukas, et al. 'Visual representation learning does not generalize strongly within the same domain.' ICLR 2022 [2] Xu, Zhenlin, Marc Niethammer, and Colin A. Raffel. 'Compositional generalization in unsupervised compositional representation learning: A study on disentanglement and emergent language.' NeurIPS 2022 [3] Ren, Yi, et al. 'Improving compositional generalization using iterated learning and simplicial embeddings.' NeurIPS 2023"
+  },
+  {
+    "id": "R4-C18",
+    "topic": "Significance",
+    "sentiment": "Neutral",
+    "statement": "关于这些发现如何帮助实际系统的讨论。",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  }
+]

@@ -1,0 +1,1717 @@
+Trading Place for Space: Increasing Location
+Resolution Reduces Contextual Capacity in
+Hippocampal Codes
+SpencerRooke1 ZhaozeWang2 RonaldW.DiTullio3∗ VijayBalasubramanian1,4,5∗
+1DepartmentsofPhysics 2ofComputerandInformationScienceand3Neuroscience
+UniversityofPennsylvania;4RudolfPeierlsCentreforTheoreticalPhysics,UniversityofOxford;
+and5SantaFeInstitute ∗: Equalcontribution
+srooke@sas.upenn.edu zhaoze@seas.upenn.edu
+ron.w.ditullio@gmail.com vijay@physics.upenn.edu
+Abstract
+Manyanimalslearncognitivemapsoftheirenvironment-asimultaneousrepresen-
+tationofcontext,experience,andposition. Placecellsinthehippocampus,named
+for their explicit encoding of position, are believed to be a neural substrate of
+thesemaps,withplacecell"remapping"explaininghowthissystemcanrepresent
+differentcontexts. Briefly,placecellsaltertheirfiringproperties,or"remap",in
+responsetochangesinexperientialorsensorycues. Substantialsensorychanges,
+produced,e.g.,bymovingbetweenenvironments,causelargesubpopulationsof
+placecellstochangetheirtuningentirely. Whilemanystudieshavelookedatthe
+physiologicalbasisofremapping,welackexplicitcalculationsofhowthecontex-
+tualcapacityoftheplacecellsystemchangesasafunctionofplacefieldfiring
+properties. Here,weproposeageometricapproachtounderstandingpopulation
+levelactivityofplacecells. Usingknownfiringfieldstatistics,weinvestigatehow
+changestoplacecellfiringpropertiesaffectthedistancesbetweenrepresentations
+ofdifferentenvironmentswithinfiringratespace. Usingthisapproach,wefind
+thatthenumberofcontextsstorablebythehippocampusgrowsexponentiallywith
+thenumberofplacecells,andcalculatethisexponentforenvironmentsofdifferent
+sizes. Weidentifyafundamentaltrade-offbetweenhighresolutionencodingof
+positionandthenumberofstorablecontexts. Thistrade-offistunedbyplacecell
+width,whichmightexplainthechangeinfiringfieldscalealongthedorsal-ventral
+axisofthehippocampus. Wedemonstratethatclusteringofplacecellsnearlikely
+pointsofconfusion,suchasboundaries,increasesthecontextualcapacityofthe
+placesystemwithinourframeworkandconcludebydiscussinghowourgeometric
+approachcouldbeextendedtoincludeothercelltypesandabstractspaces.
+1 Introduction
+Decadesofexperimentssuggestthatthemammalianhippocampusiscrucialfortheformationof
+episodic memories and spatial navigation [1, 2, 3]. Neural recordings of rodents during active
+navigationledtothediscoveryofplacecellsbyJohnO’keefe[4],namedfortheirspatiallylocalized
+firingpatterns. Theseplacecellswerequicklytheorizedtobethesubstrateofthecognitivemap-an
+animal’ssimultaneousandabstractrepresentationofcontext,experience,andposition[3,5]. Further
+experimentsledtothediscoveryofremapping[6,7,8],duringwhichplacecellsaltertheirfiring
+propertiesinresponsetochangesinsensoryandcontextualcues. Largecontextualchangesleadto
+globalremapping,inwhichpopulationlevelmapsofactivityappearingindifferentcontextsarenearly
+orthogonal,independentofcorrelationswithinanenvironment[9,10]. Manyhavespeculatedthat
+38thConferenceonNeuralInformationProcessingSystems(NeurIPS2024).
+Figure1: Placecellfiringfieldsremapinone(A)andtwo(C)dimensions. (B)Themapsf ,f
+A B
+ofonedimensionalcontextscorrespondtocurvesinneuralpopulationactivityspace,parametrized
+√
+byposition. WithconstantGaussiannoise,werequirethatthesecurvesbeadistance2σ( N +q)
+apartinordertodiscriminatecontexts. (D)Themapsf ,f oftwodimensionalcontextscorrespond
+A B
+tosurfacesinactivityspace,parametrizedbypositioninphysicalspace. Withactivitydependent,
+Poisson-likenoise,firingpatternsexponentiallylocalizetocharacteristicellipsoids. Werequirethat
+thesethickenedsurfacesdonotintersectinordertodiscriminatecontexts.
+theplacecellsystemencodescontextviaglobalremappingandthatthisencodingschemeshouldbe
+abletostorealargenumberofcontexts[11,12],butprecisecalculationsbackingthesespeculations
+arelacking. Here,weanalyzethegeometryofhippocampalcodestoapproximatethecapacityand
+propertiesofcontextencodingbyplacecells.
+We treat place cell population activity as a high dimensional space into which we can embed
+contexts (Fig. 1 ,B). Since a large fraction of hippocampal neurons are place cells [13, 14], we
+expectthisactivityspacetohavethousandsofdimensions, dependingonthespecies. Whilethe
+definingfeaturesthatdistinguishcontextarenotfullyknown[6,7,8],wedefineitasachoiceof
+surrounding environment, as is often done in practice in experiments [9, 11, 15, 16, 17, 18, 19].
+Embeddinganenvironmentinthefiringratespaceproducesaneuralmanifold, withpositionon
+themanifoldcorrespondingtoparticularpatternsofneuralpopulationactivitythatreflectlocation
+in real space. Without noise, the dimensionality of this manifold matches the dimensions of the
+encodedenvironment. Forexample,differentlineartrackswouldbeencodedasdifferent1Dcurves
+embedded in the population activity space (Fig. 1B). In this geometric framework, the distance
+betweentwomanifoldsindicateshowdifferentlytheneuralpopulationsencodeeachenvironment
+[20](Fig.1B);andiftwomanifoldsdonotoverlapatanypoint,theunderlyingcontextcanalwaysbe
+determinedwithoutconfusion. Inthenoiselesscase,weexpectthatitistrivialtodiscriminatecontext
+becausepairsofverylowdimensionalmanifoldsareunlikelytooverlapinsuchahighdimensional
+space. Realneurons,however,willhavenoisyresponseswhich"blur"ourmanifolds,givingthema
+characteristicwidtharoundthenoiseless,lowdimensionalembeddingofanenvironment. Assuch,
+ourcriterionforseparabilityofcontextsrequiresthatthesethickenedmanifoldsforeachcontextdo
+notoverlapextensivelyinratespace(Fig.1D).Weconsidertwomodelsofneuronalnoiseforourrate
+basedneurons: oneinwhichnoiseisadditiveandconstant,andasecondinwhichnoiseisadditive,
+butwithvariancescalingwithneuralactivity. ThelattermirrorsanunderlyingPoisson-likeprocess
+ofspikegenerationthatisoftenassumedforhippocampalneurons. Weinvestigatetheeffectofthese
+differentnoisemodelsonpairwiseoverlap,andfromthisextrapolatetheprobabilitythatmultiple
+contextsarediscriminable.
+WhenthenumberofneuronsN islarge,thesemanifoldsgrowfarapart,andaremoreeasilydistin-
+guished. Inweaktomoderatenoiseregimes,wefindthatthenumberofcontextsthatcanbestored
+byaplace-likecodingschemegrowsexponentiallyinN,evenwhenweenforcestrictrequirements
+thatthesystemcandiscriminatebetweencontextsatanypositionwithinanenvironment. Wefurther
+find that place cell width tunes both the ability to decode local position and the typical distance
+between contextual manifolds. Large place cell widths generate greater overlap between firing
+fields,whichinturnincreasesdiscriminabilitybetweencontexts. Conversely,smallplacecellwidths
+increasethespatialresolutionofencodings,butdecreasetheseparabilityofcontextualmanifolds.
+Thisleadstoafundamentaltrade-offbetweendecodingcontextandlocalposition. Weproposethat
+thistrade-offaccountsfortheobservedchangeinfiringfieldwidthacrossthedorsal-ventralaxis
+intherodenthippocampus,andpredictthatselectiveinhibitionalongthehippocampuswillleadto
+2
+differenttypesofmemoryimpairmentforspatialtasks,consistentwithexistingexperimentalevidence
+[21,22,23,24,25,26].Finally,wefindthatwhenfieldsareuniformlydistributed,confusionbetween
+contextsismostlikelytooccurnearboundaries. Thiseffectcanbecompensatedforbybiasingthe
+densityofplacefieldcenterstowardstheboundary,recreatingaknownfeatureofrodentplacecoding
+[27,28]. Wepredictthattheobservedplacecellclusteringnearboundariesallowstheplacesystem
+tosegregatedifferentcontextswithgreaterefficiency,andtheextentofthisclusteringisadditionally
+afunctionofcelllocationalongtheventral-dorsalaxis.
+1.1 ModelDescription
+WeconsiderapopulationofN placecells,indexedbyj,withactivitydescribedbyapopulation
+activityvector⃗r. Wetreatthisvectorasarandomvariablethatdependsbothoncontext(A),and
+positionwithinacontext(x ). Weconsiderphysicalenvironmentsinoneortwodimensions,asthis
+A
+iscommonexperimentally,sothatx iseitheraoneortwodimensionalvectordescribinglocation.
+A
+EachcontextAisequippedwithaplacemapf ,whichdefinesthetuningofeachneuronwhenthe
+A
+animaliswithinA. Thatis,f setsthemeanfiringrateofeachneuron,⟨r (x ,A)⟩ = f (x ).
+A j A A,j A
+Eachmapf canbeviewedasanencodingforaparticularcontextthatembedsx intoacertain
+A A
+setofpopulationactivityvectors⃗r (Fig.1A,B).Werestrictouranalysistoratecodingmodelsof
+population activity, where⃗r represents population firing rates (rather than spike counts) and has
+additivenoise.
+Weassumethatplacemapsareconstructedstochasticallyforeachenvironment,consistentlywith
+knownpropertiesofplacecells. Withinanenvironment,eachplacecellhasa distinctfiringfields,
+j
+wherea isdrawnfromagamma-poissondistribution,followingrecentexperimentalobservationsin
+j
+rodents[29,30],(Supplemental). Forsmallenvironments(1-2m),typicalplacecellshave0-2firing
+fieldsunderthesestatistics,withgreaterrecruitmentasenvironmentsizeincreases. Wegiveeach
+firingfieldagaussianshape,andvarythewidthsparametrically. Thetuningcurveofeachneuronis
+thenasumofgaussians:
+(cid:88)
+aj
+1
+f (x )=.1Hz+C exp− (⃗x −µ⃗ )2 (1)
+A,j A j,A 2(w /2)2 A A,i
+i
+i
+Forsimplicity, thenormalizationC ischosensothatallneuronshaveabaselinefiringrateof
+j,A
+.1Hz,andamaximumfiringrateof30Hzinenvironmentsinwhichtheyareactive.
+Withadditivenoise,neuralactivityisgivenbyr (x ,A)=f (x )+ξ . Weconsidertwonoise
+j A A,j A j
+model. In the first, ξ is gaussian distributed, and noise is not correlated between place cells, so
+thatξ⃗∼N(0,σ2I). Notethatσ2 isthevarianceinnoisemagnitudeandthushasunitsofHz2. In
+thesecondmodel,wescalethenoisevarianceofeachplacecellwithactivitytomatchunderlying
+Poisson-likestatisticsassociatedwithspikegeneration. Inthiscase,ξ ∼N(0,ϕf (x )). Here,
+j A,j A
+ϕ is a dispersion coefficient that sets how noisy the place system is, and has units of Hz. We
+can write our two models of place cell activity as⃗r(x ,A) ∼ N(f (x ),σ2I) and⃗r(x ,A) ∼
+A A A A
+N(f (x ),ϕdiag[f (x )]),respectively. Additivenoisecangeneratenegativefiringrates,andso
+A A A A
+werectifyallnegativefiringratesto0Hz.
+2 Results
+2.1 PlaceCodingCanStoreExponentiallyManyContexts
+Withtheabovemodelinhand,wesoughttoexplorethecontextcodingcapacityoftheplacecell
+network. To doso, we firstdefined what it means todiscriminate two contexts A and B. In our
+formulation, f (x ) and f (x ) define two manifolds in the space of neural activity (Fig. 1).
+A A B B
+Without noise, if these two manifolds do not intersect, then the firing patterns that arise in each
+environmentareuniquetothatenvironment. Inthiscase,bothpositionandcontextcanbeuniquely
+determinedfrompopulationactivity,andsothecontextsAandB arediscriminablesolongasf
+A
+andf donotintersect. Forthemoment,wedisregardconsiderationsofcomputationalcomplexity
+B
+requiredformanifolddiscrimination,suchasrequiringlinearseparabilityasin[31,32].
+Whenthereisnonoise,thereisaverylowprobabilitythatthesurfacesdefinedbyf andf intersect
+A B
+atanypointinourhigh-dimensionalfiringratespace,andtheintersectioncriterionistrivialtofulfil.
+3
+Theintroductionofnoisegivesthemanifoldsdefinedbyf andf acharacteristicwidth,whose
+A B
+scaleandgeometrydependsonthenatureofthenoise. Inthemodelwherenoisevarianceσ2 is
+√
+constant,thecharacteristicmanifoldwidthscaleslikeσ N whenN issufficientlylarge. Thisisdue
+toawellknowncharacteristicofgaussiansinhighdimensions,inwhichnormaldistributionshave
+√
+themajorityoftheirmasssittingnearathinannulusofradiusσ N [33,34](Supplemental). That
+is,theprobabilitydensityfortheradiusofvectorspulledfromhighdimensionalsphericalgaussians
+√ √ √
+peaksatσ N,andfallsoffexponentiallyawayfromthisshellasp (σ N+qσ)≈p (σ N)e−q2.
+R R
+Forexample,whenq =2thisleadsanapproximatefoure-folddecreaseintheprobabilitydensity,
+√
+sothatthemajorityoftheprobabilitymass(>99%forlargeN)iswithinaradiusofσ N +qσ.
+Importantly,thisexponentialfalloffisindependentofN,andsothewidthoftheannulusisoforder
+1inN. Intheratedependentnoisemodel,weinsteadgetaprobabilitymassthatisexponentially
+(cid:112)
+localizedtoanellipsoidwithmajoraxeswhoselengthsdependonfiringrates, Nϕfi(x ).
+A A
+Wewouldthenlikeawaytodeterminetheeffectofbothnoisemodelsonmanifoldoverlap,andby
+extension,decreaseincontextdiscriminability. Wesolvethisproblemgeometrically. Fortherate
+√
+independent(gaussian)noisemodel,themanifoldf (x )acquiresawidthofσ( N +q)inevery
+A A
+direction. Here,qaccountsforthenon-zerowidthofthenoiseannulus. Inanycase,ourcondition
+thattwocontextsAandBbedistinguishablethenbecomesarequirementthattheminimumdistance
+betweenf (x )andf (x )inratespaceovercomesthiswidthsetbynoise(Fig.1C):
+A A B B
+√
+min d(f (x ),f (x ))>2σ( N +q) (2)
+A A B B
+xA,xB
+Themanifoldwidthacquiredfromtheratedependent(Poisson-like)noisemodelwillvaryineach
+directionofthefiringratespacewiththeneuralfiringrate. Intuitively,wecanthinkofthiswidening
+of the manifold as placing an ellipsoid at each point along our manifold, with principle axes set
+by the firing rates of each neuron (Fig. 1D). We then check if our thickened manifolds overlap.
+Unlike the case with constant noise, where it sufficed to check that the distance between points
+betweendifferentmanifoldsisgreaterthantheminimumdistancesetbynoise,wemustcheckthatthe
+ellipsoidscenteredatf (x )andf (x )donotoverlapforanypairx ,x onthetwomanifolds.
+A A B B A B
+Forellipsoidswithcentersµ⃗ =f (x )andµ⃗ =f (x )andcovariancesΣ andΣ ,wecan
+A A A B B B A B
+definetheset:
+E ={s(⃗r−µ⃗ )TΣ (⃗r−µ⃗ )+(1−s)(⃗r−µ⃗ )TΣ (⃗r−µ⃗ )≤1} (3)
+s A A A B B B
+Here,s ∈ [0,1]. Fors = 0ors = 1,thissetdescribestheinterioroftheellipsoidcenteredatµ⃗
+A
+orµ⃗ ,respectively,andvaryingsinterpolatesbetweenthetwo. Forothervaluesofs,E iseither
+B s
+empty,asinglepoint,ortheinteriorofanellipse. Wealsonotethat,foranys,theintersectionofthe
+twoellipsoidsisalwayscontainedinE ,andsoifthereisansforwhichthissetdisappears,thenthe
+s
+twoellipsoidsdonotintersect[35]. WecanrewriteE as
+s
+E ={(⃗r−µ⃗ )TΣ (⃗r−µ⃗ )≤K(s)} (4)
+s s s s
+whereΣ = sΣ +(1−s)Σ andµ⃗ = Σ−1(sΣ µ⃗ +(1−s)Σ µ⃗ ). Thus,thetwoellipsoids
+s A B s s A a B b
+centeredatµ⃗ andµ⃗ donotintersectifandonlyifK(s)isnegativeforsomes∈[0,1];i.e.,E is
+A B s
+emptyforsomes. Asthecentersofeachellipsoidareafunctionofpositionwithintheirrespective
+contexts,wefindthat(Supplemental):
+K(s,x ,x )=1− √ 1 (cid:88) N (f B i(x B )−f A i(x A ))2 (5)
+A B ϕ( N +q)2 ( 1 fi(x )+ 1fi(x ))
+i 1−s A A s B B
+Ifforeverypairx ,x ,thereisansforwhichthisisnegative,thenourtwothickenedmanifoldsdo
+A B
+notintersect. Assuch,welets∗(x ,x )minimizeK(s,x ,x )foreachchoiceofx ,x . Toput
+A B A B A B
+thisconditioninasimilarformasequation(2),wedefineϕ∗:
+ϕ∗(x ,x )= 1 (cid:88) N (f B i(x B )−f A i(x A ))2 (6)
+A B N ( 1 fi(x )+ 1 fi(x ))
+i 1−s∗(xA,xB) A A s∗(xA,xB) B B
+OurconditiononK(s,x ,x )canthenbewritteninasimilarformtothesimplernoisemodel:
+A B
+√
+min Nϕ∗(x ,x )>( N +q)2ϕ (7)
+A B
+xA,xB
+4
+Figure2:(A)Thedistributionsfortheminimumdistanceinratespaceofδ (Top)andtheanalogue
+min
+usedfortheratedependentnoisemodel,Nϕ∗ (Bottom),constructedfromkerneldensityestimates.
+min
+AtlargeN,theseapproachgaussian. Plotsareforonedimensionalrooms,withroomlengthL=1m
+andfiringfieldwidthsW = 1/3m. (B)Theprobabilitythattwocontextsaredistinguishableasa
+functionofthenumberofneuronsandatdifferentnoiselevels,fortherateindependent(Top)and
+dependent(Bottom)noisemodels. (C)ThelogarithmofM(N),thenumberofstorablecontextsasa
+functionofN,atP =.95%confidence. InblackisthepredictedlargeN scaling,γN + 1lnN.
+M 4
+Here,q againaccountsforthenonzerowidthofthenoiseannulus. Forbothmodels,thewidthof
+theannulusqisO(1)inN,andsomakesnocontributiontoourfinalresultsatlargeN. Indeed,we
+performedthenumericalcalculationsformultiplevaluesofq,andfindthatatlargeN ourresultsare
+unchanged.Ingeneratingourfigures,weuseq =2.Notethatweareenforcingaverystrictdefinition
+ofseparabilityforbothnoisemodels. Whenseparationbetweenthetwomanifoldsisgreaterthan
+thethresholddistance,theprobabilityofconfusingthetwocontextsisvanishinglysmall. Lessstrict
+conditionswouldstillallowforgood(inapracticalsense)performanceincontextdiscrimination,but
+ourstricterdefinitionengendersseveraladvantages. First,thegeometricapproachweareusingto
+assesscapacityallowsustoeasilygeneralizetomorethantwocontexts. Second,itisimportanttobe
+asconservativeaspossibleincapacitycalculationsandsuchstrictnessshouldpreventoverestimation
+of the number of decodable contexts. Finally, our approach avoids ceiling effects for changing
+parametersofthemodel;thatis,bymakingthetaskashardaspossiblewecanobserveimpactsof
+changingdifferentparametersonperformancethatwouldbehiddenbyperformanceplateauson
+easiertasks.
+Havingthesepairwiseseparabilityconditionsfortwocontexts,wethenwantedtodeterminehow
+manycontextsM arestorablebytheplacecellsystem. Todoso,wefirstreplaceourstatements
+forparticularenvironmentsAandB withprobabilisticstatementsforanypairofroomsAandB
+generatedatrandom. Theprobabilitythattworoomsaredistinguishableisthentheprobabilitythat
+thefollowingpairwiseseparationconditionsaretrue:
+√
+ConstantNoise: P(2RoomsareSeparable)=P( min d(f (x ),f (x ))>2σ( N +q)) (8)
+A A B B
+xA,xB
+√
+VariableNoise: P(2RoomsareSeparable)=P( min Nϕ∗(x ,x )>( N +q)2ϕ) (9)
+A B
+xA,xB
+For notational convenience, we define δ ≡ min d(f (x ),f (x )) and ϕ∗ ≡
+min xA,xB A A B B min
+min ϕ∗(x ,x ). The probability that two rooms are distinguishable can then be written
+xA,xB A B
+intermsofdistributionsoverthesevariablesas:
+√
+(cid:90) 2σ( N+q)
+ConstantNoise: P =1− P(δ )dδ (10)
+2 min min
+0
+√
+(cid:90) ϕ( N+q)2
+VariableNoise: P =1− P(Nϕ∗ )Ndϕ∗ (11)
+2 min min
+0
+Thatis, wecandetermineP aslongaswecancalculatethedistributionsP(δ )andP(ϕ∗ ).
+2 min min
+ThesedistributionsapproachnormaldistributionsforlargeN (Fig.2A,Supplemental). Weuse
+5
+numerical methods to find the mean and variance of these distributions. That is, we generate
+manypairsofroomswithuniqueplacemapsforeachroomandthenreconstructtheseunderlying
+distributionsusingnormalizedKernelDensityEstimation(KDE)whilevaryingthevalueofN (the
+numberofneurons). FinallywecanusethesereconstructeddistributionstocalculateP forboth
+2
+noisemodelsasafunctionofN andthestrengthofthenoise(Fig.2B).
+Giventheabove,wecanestimatethetotalnumberofstorablecontexts,M,oftheplacesystemas
+afunctionofkeyparametersofthesystem. First,wedeterminehowM scaleswiththenumberof
+neurons N. Given the probability that any pair of rooms is distinguishable, we can estimate the
+probabilitythatM environmentsaredistinguishable,P ,viaaunionbound:
+M
+(M)
+P(Mroomsaredistinguishable)=P(∪ roomsiandj aredistinguishable)≤P 2 (12)
+i̸=j 2
+Inweaktomoderatenoiseregimes,thisinequalitybecomesapproximatelysaturated(Supplemental).
+M(M−1)
+Thus,wehaveP ≈P 2 . TofindthenumberofstorablecontextsgivenN neurons,M(N),
+M 2
+wecanincreaseM untilP fallsbelowadesiredconfidenceorallowableerror, andcalltheM
+M
+wherethisoccursthenumberofstorablecontexts. Fornumericallyderivedvalues,weuseP =.95,
+M
+butnotethatthisonlychangesprefactors,andthescalingbehaviourisindependentofthischoice.
+M(M−1)
+Equivalently, we can simply invert P ≈ P 2 to find M(N) for a given confidence P
+M 2 M
+(Supplemental):
+(cid:115)
+log(P ) 1
+M(N)≈ 2 M + +1/2∼(N1/4+O(N1/8))eγN (13)
+log(P (N)) 4
+2
+In the limit of a system dominated by noise, we can never meet our geometric constraints, and
+M(N)=1. However,ifthenoiseismorereasonable,wefindthatM scalesexponentiallywithN
+forbothnoisemodels(Fig.2C,Supplemental). Here,γ isaconstantthatdependsonfiringfield
+widths,noise,androomgeometrybut,critically,isindependentofN atlargeN. Wecancalculateγ
+intermsofthedistributionsofδ andNϕ∗ as(Supplemental):
+min min
+√
+E[δ ]/ N −2σ E[ϕ∗ ]−ϕ
+γ =( min )2 γ =( min )2 (14)
+δ (cid:112) ϕ (cid:112)
+2 Var[δ ] 2 NVar[ϕ∗ ]
+min min
+Here,γ andγ refertotheexponentsinthefixednoisemodelandvariablenoisemodel,respectively.
+δ ϕ
+OnecanreadilyshowthatatlargeN,theequationsforgammaforbothnoisemodelswillbecome
+independentofN (Supplemental). InthislargeN regime,wecanthencharacterizethenumberof
+storablecontextssolelyusingthemeanandvarianceofthedistributionsP(δ )andP(Nϕ∗ ).
+min min
+Weaccordinglycalculatedthenumberofdistinguishablecontextsnumerically,andcomparedwith
+thepredictedlargeN behaviour(Fig.2C),findinggoodagreement. Ourresultsdemonstratethat
+placecodingallowsencodingofexponentiallymanycontextswithanexponentcontrolledbythe
+amountofneuronalnoise(Fig.3).
+2.2 ATrade-offBetweenSpatialSpecificityandContextSegregation
+Realistichippocampalplacecellshavetuningcurvesofvaryingwidths. Indeed,acrossthedorso-
+ventralaxisofthehippocampus,placefieldwidthscanvarybynearlyanorderofmagnitude[21,24],
+with ventral place cells having wider tuning than dorsal cells. As such, we next explored how
+theexponentofthenumberofstoredcontextsγ scalesasafunctionoffiringfieldwidth(Fig.3,
+Supplemental). Todoso,wenumericallyreconstructedthedistributionsP(δ )andP(Nϕ∗ )
+min min
+forvariousplacecellwidths. Inourmodel,increasingthewidthsofplacefieldtuningsstartingfrom
+smallsizesgenerallyleadstoanincreaseinthedistancebetweenrepresentationsofenvironments.
+Thatisbecause,especiallyinsmallenvironments,arelativelysmallnumberofplacecellswillshow
+placefields,andhencesmallplacefieldsleadtosparsepopulationactivity,reducingtheabsolute
+distancebetweenfiringvectorsindifferentenvironments. Increasingplacefieldwidthsincreases
+the average neuronal activity within an environment, thus pushing the encoding manifolds apart.
+Asaresult,weexpectlargerfieldstoincreasecontextualcapacity. Infact,insmallenvironments
+(1m−4m),optimalcontextdiscriminationperformanceoccurswithfiringfieldsthatareaboutthe
+size of the environment (Fig. 3). We can get a sense of why this happens as follows. Consider
+smallerenvironmentsinwhichlessthanhalfofallplacecellsareactiveduetotheGamma-Poisson
+6
+Figure3: ThecalculatedvalueoftheexponentialγatlargeN ofequation(14),asafunctionoffiring
+fieldwidthandneuronalnoise. Theenvironmentsare1m(AandB)and1m2 (CandD).(Aand
+C)representtherateindependentnoisemodel(Gaussian),while(BandD)arethenoisedependent
+model(Poisson-like). Whitelinesdemarcatethetransitionintothenon-separableregime. Wefind
+betterperformanceforthelowerdimensionalenvironmentsandthePoisson-likemodel. Forlarger
+environments,smallerrelativewidthsbecomepreferable(Supplemental,Fig.8).
+statistics of place cell activation [29, 30]. When place cells have extremely large widths in this
+regime,eachneuroniseithercompletelyonoroffwithinagivenenvironment,andsoeachcontext
+becomesassociatedwitharandombinaryidentifier,thatwillbeuniquewithhighprobability. Thus
+theenvironmentalcontextcanbereadoffsimplybynotingwhichplacecellsareactive,although
+thereisnolocationresolutionatall. Bycontrast,inlargerrooms,mostplacecellswillhaveatleast
+onefiringfield. So,althoughthesparsefiringofnarrowplacefieldsmakesithardertodiscriminate
+contextsbasedontheirresponses,thelargest,environment-sizedfiringfieldsalsobecomeuselessin
+thiscasebecauseessentiallyallcellswillbeactiveineveryroom(Supplemental). Ineithercase,we
+expectatradeoffbetweenthetwingoalsofcontextandlocationdiscriminationthatdependsdirectly
+onplacefieldsize,andindirectlyonenvironmentsizeduetothegamma-poissonstatisticsusedto
+generateplacefieldcenters.
+Tuning the firing field widths lets us explore the trade-off between two presumed objectives for
+hippocampalfunction;encodingofpositionandencodingofmultiplecontexts. Whilewiderfields
+aregenerallybetterforcontextsegregation,itisclearthattheyarenotoptimalforspatialspecificity,
+aswiderfieldsresultinlessvariationinpopulationlevelfiringbetweenlocations. Thusweexpecta
+trade-offbetweenspatialinformationencodedwithinacontext,andtheabilitytoseparatecontexts,
+tunedbythewidthsofplacecellfiringfields. Toformalizethistrade-off,wemustdeterminehowwe
+willexplicitlycharacterizebothspatialspecificityandcontextsegregation. Tocharacterizespatial
+specificity,wechosetoutilizeaveragedecodingperformanceondecodingcurrentpositionxˆfrom
+thefiringrates⃗r(x)oftheplacecellsystem. Naturally,goodperformanceoccurswhenthedecoded
+positiontypicallyagreeswiththetrueposition,or⟨(xˆ−x)2⟩ issmallatmostpositions. Toavoid
+⃗r|x
+aparticularchoiceofdecoder,weinvoketheCramer-Raobound,whichlowerboundsthecovariance
+ofanyestimatorbytheinverseFisherInformation:
+⟨(xˆ−x)(xˆ−x)T⟩ ≥I−1(x)=(E [(∇ l)⊗(∇ l)])−1 (15)
+P(r|x) r x x
+⟨(xˆ−x)2⟩ ≥Tr[I−1(x)] (16)
+P(r|x)
+Whenxrepresentspositioninaonedimensionalcontext,theinverseFisherInformationisascalar. If
+xisnotonedimensional,thentheinequalityisastatementaboutthedifferencebetweenthecovariance
+andtheinverseoftheFisherInformationbeingpositivesemi-definite,sothataboundonthemean
+squarederrorcanbefoundbytakingatrace. Inbothnoisemodels,theFisherInformationcanbe
+calculatedexactlyintermsofthetuningsofeachneuronwithinanenvironmentas(Supplemental):
+1 (cid:88) (cid:88) 1 1
+I = ∇ fi ⊗∇ fi I = ( + )∇ fi ⊗∇ fi (17)
+δ σ2 x A x A ϕ ϕfi(x) 2fi(x)2 x A x A
+i i A A
+Wecannowcharacterizespatialspecificitybycalculatingtheaveragespatialresolutionbyaveraging
+theCramer-Raoboundwithrespecttobothpositionandcontext. Theobjectiveformaximizingthe
+spatial resolution can be formalized by minimizing ln⟨⟨Tr[I−1(x)]⟩ ⟩ (Fig. 4A). Tuning firing
+x A
+fieldsforhighspatialresolutiondrivesthefiringfieldwidthstoaminimumsetbythepopulationsize.
+Clearly,thisisatoddswiththefirstobjectiveforstoringmanycontexts,whichdrivesfiringfieldsto
+belarger. Herewefindouranticipatedfiringfieldwidthtrade-offbetweenthesetwoobjectives. The
+characterofthistrade-offdependsonhowweformalizeanobjectivefunctionwithrespecttofiring
+7
+Figure4: (A)TheCramerRaoBoundforbothnoisemodels. (Top)representstherateindependent
+model,while(Bottom)representstheratedependentmodel. (B-C)Theoptimalwidthasafunction
+oftherelativeimportancebetweenthetwoobjectives. UsinglnM tocharacterizecontextdecoding
+leadstoasharpchangeintheoptimalwidth,whilelnP leadstoamoregradualchange. Inboth
+2
+cases,thereisatrade-offbetweenstoringhighresolutioninformationandstoringmanycontexts,
+tunedbyfiringfieldwidth.
+fieldwidthW. Weconsidertwoobjectivefunctions:
+L =λ(−1)log(M(N,W))+(1−λ)log⟨⟨Tr[I−1]⟩ ⟩ (18)
+1 x A
+L =λ(−1)log(P (N,W))+(1−λ)log⟨⟨Tr[I−1]⟩ ⟩ (19)
+2 2 x A
+Hereλ ∈ [0,1]interpolatesbetweenthetwoobjectivesbysettingtherelativeimportanceofeach,
+N isthenumberofneurons,W isthewidthofthefiringfields,P istheprobabilitythat2rooms
+2
+are separable given N and W, and M(N,W) is the number of storable contexts (see discussion
+beloweq.12). Astherelativeimportanceshiftsfromahighcontextualcapacitytohighcontextual
+resolution, the optimal firing field width shrinks to a minimum set by the averaged Cramer-Rao
+bound. Suchcapacity-resolutiontrade-offsareconsistentwiththosedemonstratedinrecurrentneural
+networks[36]. Forthefirstchoiceofobjectivefunction,theoptimalwidthjumpsabruptlyaswevary
+λ(Fig.4B).Thesecondchoiceofobjectivefunction,ontheotherhand,stronglypenalizeswidthsfor
+whichcontextsegregationbecomesimpossible,leadingtoasmoothtransitionoftheoptimalfiring
+fieldaswevaryλ(Fig.4C).Regardless,weseethesamecleartrade-offbetweenourtwoobjectives
+for each choice of formalization. This result suggests that the difference in field size across the
+dorsal-ventralaxisofthehippocampusmayreflectasegregationofcodingfunctionbyoptimizingfor
+differentobjectivesratherthanjustagradientofspatialresolutionasiscommonlyposited[17,11].
+Thisisalsoconsistentwithexperimentalevidencethatdorsalhippocampusislargelyrecruitedfor
+spatialtasks,whileventralhippocampustypicallyshapescontextualresponse[22,23,24,25,26].
+2.3 FieldClusteringnearBoundariesimprovesContextSegregation
+Sofar,wehaveassumedthatthefiringfieldcentersareuniformlydistributed. Inreality,placecells
+often drift near positions of interest and frequented locations, such as boundaries or rewards. If
+placecellsformacompressedrepresentationofexperience,thenwecanreasonablyproposethatthe
+densityofplacecellsatalocationshouldreflectanincreasedresolutionformemoryformationnear
+thatlocation. Thisclusteringcouldalsohaveaneffectoncontextseparability. Indeed,wepredict
+thatsuchclusteringimprovescontextsegregation,anddemonstratethatbiasingplacecellstowards
+theboundariesofcontextscanimprovetheabilityoftheplacesystemtodiscriminatebetweenthem.
+Auniformlydistributedplacecellpopulationwill,ingeneral,havelessoverlappingfieldsnearthe
+boundaries of an environment. Since discrimination between contexts critically depends on the
+overlapbetweenplacecellfiringfields,thislackofdensitybytheboundariesincreasestheprobability
+of confusion between contexts. This observation matches perceptual intuition. In the center of
+environments, animals are able to reference distal cues as well as different proximal cues in the
+8
+Figure5: (A)Anexamplesurfacesweptoutbetweendistancesincodespacebypositionsx ,x ,
+A B
+d(f (x ),f (x )). Wehaveanalagoussurfacesfortheratedependentnoisemodel. (B)Theheight,
+A A B B
+onaverage,oftheminimumofthethissurfaceforbothnoisemodels,andvariousfiringfieldwidths.
+(C)Theoptimalvaluesofαderivedfromthisapproach,forbothnoisemodelsandanapproximation
+fromequalizingfiringratiosfromtheboundaryandthebulk(Supplemental). (D)Thesampleto
+sampleaverageofthesurfaceremovesvariationsduetotherandomchoiceoff . Theminimumof
+A
+thissurfaceisneartheboundariesatα=1,butjumpsdiscontinuouslythecenterasαdecreases.
+environment.Adjacenttoaboundary,theboundaryisthedominatecueandlikelyobscuresothercues
+thatcouldpotentiallydistinguishenvironments. Inourmodel,wecanaddanin-homogeneitytothe
+pointprocessforgeneratingplacefieldcenterstoincreaseplacefielddensityneartheboundaries. For
+onedimensionalcontexts,wecanparameterizethisin-homogeneityviaasymmetricbetadistribution,
+β(x/L;α,α)(Supplemental)overspace. Hereαactsasa’uniformity’parameter. Withα=1we
+recoverthehomogeneousprocessandhaveuniformlydistributedplacecells. Valuesofα<1will
+progressivelybiasfiringfieldcenterstowardstheboundaries.
+TounderstandtheeffectofthebiasαondiscriminationofpairsofcontextsAandB,wecanlook
+at where the distance in rate space is smallest. These distances are given by d(f (x ),f (x ))
+A A B B
+andK(s(x ,x ),x ,x )foreachnoisemodel,respectively. Foronedimensionalcontexts,these
+A B A B
+can be viewed as two dimensional surfaces swept out by x and x (Fig. 5A), while for two
+A B
+dimensionalcontextsthesecouldbeviewedasfourdimensionalsurfaces. Wetakethesampleto
+sample(annealed)averagefirst,tofindwhere,onaverage,theminimumofthissurfaceislikelytobe
+found(Fig.5D).Withα=1thisminimumoccursmostoftenneartheboundariesofeithercontextA
+orB. Aswedecreaseα,theminimumoftheaveragedsurfaceneartheboundariesincreasesuntilit
+eventuallyjumpsdiscontinuouslytothecenter(Fig.5D).Thevalueofαforwhichthisjumpoccurs
+isdependentonfiringfieldwidthandthenoisemodelunderconsideration,butisindependentof
+N atlargeN (Fig.5B).Widerfiringfieldstendtoleadtoalargeroptimalbias(Fig.5C).Intwo
+dimensions,weconsideredadistributionoffiringfieldcentersthatisaproductofbetadistributions,
+β(x/L;α ,α )β(y/L;α ,α ). The analysis for the x direction and y direction separate, which
+x x y y
+leadstoidenticaloptimalvaluesfortheuniformityparameterαasinthe1-Dcase.
+3 Discussion
+Manyresearchershaveproposedthattheplacesystemintheneuralsubstrateofthecognitivemap
+andthatglobalplacecellremappingplaysacriticalroleinstoringinformationaboutenvironmental
+context[11,15,16,17,6,7,8]. Further,recentworkmayimplicatetheroleofplacemapsingeneral,
+shorttermmemoryformation[11,37,38,39,40],whichmightexplaintheneedforsuchalarge
+contextualcapacity. Inthiswork,wehavebuiltupontheseproposalsbyexplicitlydemonstrating
+underrealisticfiringstatisticsthattheplacecellsystem’scontextstoragecapacitygrowsexponentially
+9
+with the number of neurons, and by calculating the associated exponents. This large capacity is
+consistentwiththenotionthatthehippocampusiscapableofpatternseparatingcontextandencoding
+manyexperiences[41,42,43],andherewedemonstratethataplace-likecodingschemealoneis
+sufficientinthisregard. Toachievethisresult,wedevelopedageometricmodelofplacecellactivity,
+whichallowedustoexplorehowthiscapacitychangesasafunctionofthenumberofplacecellsin
+thesystemandofplacecellfiringfieldproperties. Whileourstrictconditionsonpairwiseseparability
+leads to a coding scheme that is robust to noise, we note that less strict conditions may be more
+realistic,andbettersuitananimalsbehaviouralneeds. Weprimarilyfocusedonglobalremapping
+here,butconjecturethatthequalitativestructureofourresultsremainunchangedbyincludingthe
+effectsofpartialremapping. Includingtheseeffectswillgiveeachmanifoldanadditionalwidth
+alongafewdimensionsduetovariationsthatarenotduetoneuralnoise,butratherduetopartial
+or rate remapping. Additionally, we have not considered here the complexity of decoders of the
+hippocampus. Althoughweshowthatcontextseparationisachievable,therequirementofsimple
+decoding,aswellasthearchitectureoftheunderlyinghippocampalnetwork,willfurtherconstrain
+thecontextualcapacity[31,32,36].
+Wethenexploredimplicationsofthismodelasitpertainstovariousobjectivesofthehippocampal
+code. Inparticular,werevealedatrade-offbetweenpreciseencodingoflocalpositionanddiscrim-
+inationbetweendifferentcontexts. Wefoundthattuningindividualplacecellsforencodinglocal
+positionleadstosmallerplacefieldwidths,whileincreasingplacefieldwidthsleadstoimprovedper-
+formanceforcontextdiscrimination. Thesizeofplacefieldsincreasesfromthedorsalhippocampus
+totheventralhippocampus[21,24],andwesuggestthatthismixedpopulationofneuronsallows
+thehippocampustoperformbothobjectivesefficiently. Thatis,ourmodelsuggeststhatplacecells
+ofthedorsalhippocampusarebettertunedforfinegrainedmemory,whilethemorewidelytuned
+ventralcellsarebettertunedforpatternseparationandstorageofmanycontexts. Thisisconsistent
+withexperimentalevidence,inwhichdorsallesiontypicallyimpairspatialmemory,whileventral
+lesionsdonot. Conversely,ventrallesionshavebeendemonstratedtoimpaircontextualmemory,for
+exampledecreasingresponseincontextualfearexperiments,buthaveminimalaffectonspatialtasks
+[22,23,24,25,26].
+Wealsofoundthatbiasingplacecellcenterstoclusternearenvironmentalbordersimprovescontext
+discrimination. Over-representationofplacefieldactivitynearboundariesiswelldocumented[27],
+andwepredictthatthisbiaswillsystematicallyvaryacrossthedorsal-ventralaxisofthehippocampus,
+withthemorewidelytunedventralplacecellsdisplayinggreaterbiasthandorsalplacecells. As
+rodentstypicallyexplorenearboundariesofanenvironment,theneedforhigherspatialresolutionin
+theselocationsmayalsoleadtoasimilarbias. Infactitiswellestablishedthatdevelopmentaland
+self-organizationmechanismscanproduceefficientstructuralandfunctionaloptimizations(vision:
+[44, 45, 46]; audition: [47, 48, 49]; olfaction: [50, 51]; spatial cognition: [52]) and here we are
+suggestingthatsimilarprocessesmayoperateintheplacesystem.
+Whilewehaveexploredhippocampalcodesinisolation,interactionswithotherspatiallytunedcells,
+suchaegocentricandallocentricbordercells,likelyhaveaneffectonthisbiasnotexploredhere,
+suggesting yet another intricate interaction between allocentric-egocentric representations in the
+hippocampus[53]. Ifplacecellsareimplicatedforgeneralepisodicmemory,suchaninteractionmay
+implythatboundarycellsplayaroleingeneralmemory. Exploringthisinteractionisatopicfor
+futurework,andourapproachprovidesafoundationforexploringtheseavenues.
+Finally,wehavealsofocusedonphysicaloneandtwodimensionalcontextsinthiswork,butour
+geometricformulationgeneralizestohigherdimensionalandabstractspaces. Ourderivationofthe
+exponentialscalingisindependentofthedimension,andsowepredictthatthehippocampusshould
+alsobeabletosegregatecontextanddistinguishlocationsinmoreabstractspacesefficiently. Itis
+worthnotinghoweverthatthereisstillanappreciabledropinperformancewhenmovingfromoneto
+twodimensionalspaces,andsothesystemislikelyincentivizedtoencodeabstractspaceswithlower
+dimensionalstructureswhenpossible.
+Acknowledgments: We thank Dori Derdikman, Genela Morris, and Shai Abramson for many
+illuminatingdiscussionsinthecourseofthiswork,whichwassupportedinpartbyNIHCRCNS
+grant1R01MH125544-01andbytheNSFandDoDOUSD(R&E)underAgreementPHY-2229929
+(The NSF AI Institute for Artificial and Natural Intelligence). VB was supported in part by the
+EastmanProfessorshipatBalliolCollege,Oxford.
+10
+References
+[1] LRSquire. Memoryandthehippocampus: asynthesisfromfindingswithrats,monkeys,and
+humans. PsycholRev,99(2):195–231,April1992.
+[2] W B Scoville and B Milner. Loss of recent memory after bilateral hippocampal lesions. J
+NeurolNeurosurgPsychiatry,20(1):11–21,February1957.
+[3] JohnO’KeefeandLynnNadel. TheHippocampusasaCognitiveMap. Oxford: Clarendon
+Press,1978.
+[4] JO’KeefeandJDostrovsky. Thehippocampusasaspatialmap.preliminaryevidencefrom
+unitactivityinthefreely-movingrat. BrainRes,34(1):171–175,November1971.
+[5] JohnLKubie,EliottRJLevy,andAndréAFenton.Ishippocampalremappingthephysiological
+basisforcontext? Hippocampus,30(8):851–864,September2019.
+[6] RUMullerandJLKubie. Theeffectsofchangesintheenvironmentonthespatialfiringof
+hippocampalcomplex-spikecells. JNeurosci,7(7):1951–1968,July1987.
+[7] EBostock,RUMuller,andJLKubie. Experience-dependentmodificationsofhippocampal
+placecellfiring. Hippocampus,1(2):193–205,April1991.
+[8] ERWood,PADudchenko,RJRobitsek,andHEichenbaum. Hippocampalneuronsencode
+informationaboutdifferenttypesofmemoryepisodesoccurringinthesamelocation. Neuron,
+27(3):623–633,September2000.
+[9] Charlotte B. Alme, Chenglin Miao, Karel Jezek, Alessandro Treves, Edvard I. Moser, and
+May-BrittMoser. Placecellsinthehippocampus: Elevenmapsforelevenrooms. Proceedings
+oftheNationalAcademyofSciences,111(52):18428–18435,2014.
+[10] Stefan Leutgeb, Jill K Leutgeb, Alessandro Treves, May-Britt Moser, and Edvard I Moser.
+DistinctensemblecodesinhippocampalareasCA3andCA1. Science,305(5688):1295–1298,
+July2004.
+[11] May-BrittMoser,DavidCRowland,andEdvardIMoser. Placecells,gridcells,andmemory.
+ColdSpringHarbPerspectBiol,7(2):a021808,February2015.
+[12] ManYiYim,LorenzoASadun,IlaRFiete,andThibaudTaillefumier. Place-cellcapacityand
+volatilitywithgrid-likeinputs. eLife,10:e62702,may2021.
+[13] LTThompsonandPJBest. Placecellsandsilentcellsinthehippocampusoffreely-behaving
+rats. JNeurosci,9(7):2382–2390,July1989.
+[14] Kenji Mizuseki, Sebastien Royer, Kamran Diba, and György Buzsáki. Activity dynamics
+and behavioral correlates of ca3 and ca1 hippocampal pyramidal neurons. Hippocampus,
+22(8):1659–1680,2012.
+[15] James J Knierim. Dynamic interactions between local surface cues, distal landmarks, and
+intrinsic circuitry in hippocampal place cells. Journal of Neuroscience, 22(14):6254–6264,
+2002.
+[16] JamesJKnierim. Hippocampalremapping: implicationsforspatiallearningandnavigation.
+Theneurobiologyofspatialbehaviour.OxfordUniversityPress,Oxford,pages226–239,2003.
+[17] JamesJKnierim. Thehippocampus. CurrentBiology,25(23):R1116–R1121,2015.
+[18] HeekyungLee,DouglasGoodSmith,andJamesJKnierim. Parallelprocessingstreamsinthe
+hippocampus. Currentopinioninneurobiology,64:127–134,2020.
+[19] Sang Hoon Kim, Douglas GoodSmith, Stephanie J Temme, Fumika Moriya, Guo-li Ming,
+KimberlyMChristian,HongjunSong,andJamesJKnierim. Globalremappingingranulecells
+andmossycellsofthemousedentategyrus. Cellreports,42(4),2023.
+11
+[20] Nikolaus Kriegeskorte, Marieke Mur, and Peter A Bandettini. Representational similarity
+analysis-connectingthebranchesofsystemsneuroscience. Frontiersinsystemsneuroscience,
+2:249,2008.
+[21] KirstenBrunKjelstrup,TrygveSolstad,VegardHeimlyBrun,TorkelHafting,StefanLeutgeb,
+MennoPWitter,EdvardIMoser,andMay-BrittMoser. Finitescaleofspatialrepresentationin
+thehippocampus. Science,321(5885):140–143,July2008.
+[22] BrianJ.HockandMichaelD.Bunsey. Differentialeffectsofdorsalandventralhippocampal
+lesions. JournalofNeuroscience,18(17):7027–7032,1998.
+[23] MARichmond,BKYee,BPouzet,LVeenman,JNRawlins,JFeldon,andDMBannerman.
+Dissociatingcontextandspacewithinthehippocampus: effectsofcomplete,dorsal,andventral
+excitotoxichippocampallesionsonconditionedfreezingandspatiallearning. BehavNeurosci,
+113(6):1189–1203,December1999.
+[24] RobertWKomorowski,CarolynGGarcia,AlixWilson,ShoaiHattori,MarcWHoward,and
+Howard Eichenbaum. Ventral hippocampal neurons are shaped by experience to represent
+behaviorallyrelevantcontexts. JNeurosci,33(18):8079–8087,May2013.
+[25] KirstenGKjelstrup,FrodeATuvnes,Hill-AinaSteffenach,RobertMurison,EdvardIMoser,
+andMay-BrittMoser. Reducedfearexpressionafterlesionsoftheventralhippocampus. Proc
+NatlAcadSciUSA,99(16):10825–10830,July2002.
+[26] MBMoser,EIMoser,EForrest,PAndersen,andRGMorris. Spatiallearningwithaminislab
+inthedorsalhippocampus. ProcNatlAcadSciUSA,92(21):9697–9701,October1995.
+[27] SIWiener, CAPaul, andHEichenbaum. Spatialandbehavioralcorrelatesofhippocampal
+neuronalactivity. JournalofNeuroscience,9(8):2737–2763,1989.
+[28] Stig A. Hollup, Sturla Molden, James G. Donnett, May-Britt Moser, and Edvard I. Moser.
+Accumulationofhippocampalplacefieldsatthegoallocationinanannularwatermazetask.
+JournalofNeuroscience,21(5):1635–1644,2001.
+[29] JaeSungLee,JohnJ.Briguglio,JeremyD.Cohen,SandroRomani,andAlbertK.Lee. The
+statisticalstructureofthehippocampalcodeforspaceasafunctionoftime,context,andvalue.
+Cell,183(3):620–635.e22,2020.
+[30] SanderTanni,WilliamdeCothi,andCaswellBarry. Statetransitionsinthestatisticallystable
+placecellpopulationcorrespondtorateofperceptualchange. CurrBiol,32(16):3505–3514.e7,
+July2022.
+[31] SueYeonChung,DanielD.Lee,andHaimSompolinsky. Classificationandgeometryofgeneral
+perceptualmanifolds. Phys.Rev.X,8:031003,Jul2018.
+[32] UriCohen,SueYeonChung,DanielD.Lee,andHaimSompolinsky. Separabilityandgeometry
+ofobjectmanifoldsindeepneuralnetworks. NatureCommunications,11(1):746,Feb2020.
+[33] ChristopherM.Bishop. Patternrecognitionandmachinelearning. NewYork:Springer,[2006]
+©2006,[2006]. Textbookforgraduates.;Includesbibliographicalreferences(pages711-728)
+andindex.
+[34] AvrimBlum,JohnHopcroft,andRavindranKannan. FoundationsofDataScience. Cambridge
+UniversityPress,2020.
+[35] Igor Gilitschenski and Uwe D. Hanebeck. A robust computational test for overlap of two
+arbitrary-dimensionalellipsoidsinfault-detectionofkalmanfilters. In201215thInternational
+ConferenceonInformationFusion,pages396–401,2012.
+[36] AldoBattistaandRémiMonasson. Capacity-resolutiontrade-offintheoptimallearningof
+multiplelow-dimensionalmanifoldsbyattractorneuralnetworks. Phys.Rev.Lett.,124:048302,
+Jan2020.
+12
+[37] Marcus K. Benna and Stefano Fusi. Place cells may simply be memory cells: Memory
+compression leads to spatial tuning and history dependence. Proceedings of the National
+AcademyofSciences,118(51):e2018422118,2021.
+[38] HowardEichenbaumandNealJCohen. Canwereconcilethedeclarativememoryandspatial
+navigationviewsonhippocampalfunction? Neuron,83(4):764–770,August2014.
+[39] HowardEichenbaum, PaulDudchenko, EmmaWood, MatthewShapiro, andHeikkiTanila.
+Thehippocampus,memory,andplacecells: Isitspatialmemoryoramemoryspace? Neuron,
+23(2):209–226,1999.
+[40] ZhaozeWang,RonaldWDiTullio,SpencerRooke,andVijayBalasubramanian. Timemakes
+space: Emergenceofplacefieldsinnetworksencodingtemporallycontinuoussensoryexperi-
+ences. August2024.
+[41] ArnoldBakker,CBrockKirwan,MichaelMiller,andCraigELStark. Patternseparationinthe
+humanhippocampalCA3anddentategyrus. Science,319(5870):1640–1642,March2008.
+[42] MichaelAYassaandCraigELStark. Patternseparationinthehippocampus. TrendsNeurosci,
+34(10):515–525,July2011.
+[43] EdmundRolls. Themechanismsforpatterncompletionandpatternseparationinthehippocam-
+pus. FrontiersinSystemsNeuroscience,7,2013.
+[44] CharlesPRatliff,BartGBorghuis,Yen-HongKao,PeterSterling,andVijayBalasubramanian.
+Retina is structured to process an excess of darkness in natural scenes. Proceedings of the
+NationalAcademyofSciences,107(40):17368–17373,2010.
+[45] PatrickGarrigan,CharlesPRatliff,JenniferMKlein,PeterSterling,DavidHBrainard,and
+VijayBalasubramanian. Designofatrichromaticconearray. PLoScomputationalbiology,
+6(2):e1000677,2010.
+[46] AnnMHermundstad,JohnJBriguglio,MaryMConte,JonathanDVictor,VijayBalasubra-
+manian,andGašperTkacˇik. Variancepredictssalienceincentralsensoryprocessing. Elife,
+3:e03722,2014.
+[47] MichaelSLewicki. Efficientcodingofnaturalsounds. Natureneuroscience,5(4):356–363,
+2002.
+[48] EvanCSmithandMichaelSLewicki. Efficientauditorycoding. Nature,439(7079):978–982,
+2006.
+[49] Ronald W Di Tullio, Linran Wei, and Vijay Balasubramanian. Slow and steady: auditory
+featuresfordiscriminatinganimalvocalizations. bioRxiv,doi: 10.1101/2024.06.20.599962,
+pagedoi: 10.1101/2024.06.20.599962,2024.
+[50] TiberiuTes¸ileanu,SimonaCocco,RemiMonasson,andVijayBalasubramanian. Adaptationof
+olfactoryreceptorabundancesforefficientcoding. Elife,8:e39279,2019.
+[51] Kamesh Krishnamurthy, Ann M Hermundstad, Thierry Mora, Aleksandra M Walczak, and
+VijayBalasubramanian. Disorderandtheneuralrepresentationofcomplexodors. Frontiersin
+ComputationalNeuroscience,16:917786,2022.
+[52] Xue-XinWei,JasonPrentice,andVijayBalasubramanian. Aprincipleofeconomypredictsthe
+functionalarchitectureofgridcells. Elife,4:e08362,2015.
+[53] ChengWang,XiaojingChen,andJamesJKnierim. Egocentricandallocentricrepresentations
+ofspaceintherodentbrain. Currentopinioninneurobiology,60:12–20,2020.
+[54] AdamPaszke,SamGross,SoumithChintala,GregoryChanan,EdwardYang,ZacharyDeVito,
+ZemingLin,AlbanDesmaison,LucaAntiga,andAdamLerer. Automaticdifferentiationin
+pytorch. 2017.
+[55] F. Pedregosa, G. Varoquaux, A. Gramfort, V. Michel, B. Thirion, O. Grisel, M. Blondel,
+P.Prettenhofer,R.Weiss,V.Dubourg,J.Vanderplas,A.Passos,D.Cournapeau,M.Brucher,
+M.Perrot,andE.Duchesnay. Scikit-learn: MachinelearninginPython. JournalofMachine
+LearningResearch,12:2825–2830,2011.
+13
+A Supplemental
+A.1 SimulationDistributionsandFiringFields
+A.1.1 Gamma-PoissonDistributions
+Thenumberoffiringfieldseachplacecellhasisdeterminedbyagamma-poissondistribution,as
+describedin[29,30]. Thisisamixedpoissonmodel,withagammadistributionactingasthemixing
+distribution. Thatis,theratevariableofthepoissonmodelisgammadistributedwithparameters
+α,β. Weuseα=1.5andα=2.25inoneandtwodimensions,respectively. Weuseβ =4m/Land
+β =8m2/Ainoneandtwodimensions,respectively. Thesecreatedistributionsconsistentwiththose
+seeninexperiment,asbelow[29,30]. Thetotalnumberofneuronsforgeneratingthesedistributions
+was200:
+Figure6: Thenumberoffiringfieldsperneuronthatarisefromthegamma-poissondistribution. Top
+isonedimensionalroomsthatvaryinlengthfrom1mto8m. Bottomistwodimensionalroomsthat
+varyinsizefrom1m2to8m2. Asroomsgetlarger,neuronsarerecruitedforrepresentationsmore
+often
+Underthesestatistics,mostneuronsaresilentinsmallrooms,sotwocontextswillsharefewactive
+neurons. Inlargerooms,fewneuronshavenofiringfields,andsotwocontextswillsharemanyactive
+neurons.
+A.1.2 FieldDefinitions
+Foreachrandomlygeneratedroom,eachneuron,indexedbyj,hasa fieldsdrawnfromthegamma-
+j
+poissondistributiondescribedabove. Eachfiringfieldcenterisplacedaccordingtoahomogeneous
+(firsttwoparts)ornonhomogeneous(lastpart)poissonprocessoverspace. Firingfieldsaregaussian,
+sothatthetotalspatialtuningisgivenbyasumofgaussians:
+(cid:88)
+aj
+1
+f (x )=.1Hz+C exp− (⃗x −µ⃗ )2 (20)
+A,j A j,A 2(w /2)2 A A,i
+i
+i
+Allneuronsaregivenbasefiringrateof.1Hz,andC ischosensothatactiveneuronshaveamax
+j,A
+firingrateof30Hzforsimplicity. Maxfiringratesarenotdrawnfromadistribution,tospeeduppdf
+convergencetimes. Likewise,widthsarenotchosenstochastically,andhaveequalfixedwidth. This
+alsospeedsuppdfconvergencetimes,andadditionallyletsusstudytheeffectofchangingfiringfield
+widthsinisolation.
+A.1.3 HighDimensionalGaussians
+Hereweoutlineastandardmethodofdemonstratingtheexponentiallocalizationofgaussiansto
+shellsinhighdimensions[33,34]. IfzisdistributedaccordingtoanormalN dimensionalspherical
+14
+gaussianwithvarianceσ2,andR=|z| isitsnorm,thenthedistributionofRis
+2
+S RN−1 R2
+p(R)= N exp{− } (21)
+(2πσ2)N/2 2σ2
+whereS istheareaoftheN dimensionalunitsphere. Setting ∂ p(R)=0,wefindthisdistribution
+N √ √ ∂R
+hasamaximumatσ N. Nowforanyσq <<σ N,wehavethat
+√
+p R (σ √ N +σq)= S N (σ (2π N σ2 + )N σ / q 2 )N−1 e−(σ √ N 2σ + 2 qσ)2 (22)
+= S N e−N 2 −q √ N−q 2 2 +(N−1)ln(σ √ N+σq) (23)
+(2πσ2)N/2
+= S N e−N 2 +(N−1)ln(σ √ N)e−q √ N−q 2 2 +(N−1)ln(1+√q N ) (24)
+(2πσ2)N/2
+√ √ q2 q
+=p (σ N)exp{−q N − +(N −1)ln(1+ √ )} (25)
+R 2 N
+√ √ q2 q q2
+=p (σ N)exp{−q N − +(N −1)(√ − +O(N−3/2))} (26)
+R 2 N 2N
+√
+=p (σ N)exp{−q2+O(N−1/2)} (27)
+R
+Andsothemassofahighdimensiongaussianisexponentiallylocalizedtoanannulusofradius
+√
+σ N. Wecanchooseaq suchthatthemajorityoftheprobabilitymassofziswithinaasphere
+√
+ofradiusσ( N +q). Forallthefiguresinthemaintext,weuseq = 2,whichleadsto≈ 99.8%
+√
+ofthemassofp(z)beingwithinasphereofradiusσ( N +q). Asqisoforder1inN,choosing
+largervaluesleadstoanegligibleeffectonderivedvaluesatlargeN,whichweadditionallyverified
+numerically.
+Forthevariablenoisemodel,ξ ∼N(0,ϕdiag{f (x )}). Wehavethenthatξatanypositionx is
+A A A
+(cid:112)
+exponentiallylocalizedtoanellipsoidwithmajoraxisoflength Nϕfi(x ). Includingtheannulus
+A A √
+(cid:112)
+width,wehavethattheellipsoidwidthinaparticulardirectionis ϕfi(x )( N +q).
+A A
+A.1.4 EllipsoidIntersection
+We want to check if the manifolds widened out by noise intersect. For the simple noise model,
+checkingifthespherescenteredatf (x )andf (x )forsomepairx ,x isequivalenttochecking
+A A B B A B
+if the distance between their centers is greater than twice their radius, or d(f (x ),f (x )) >
+√ A A B B
+2σ( N +q). For the variable noise model, we need an efficient way to check if two ellipsoids
+intersect.
+From [35], two ellipsoids in a high dimensional euclidean space, defined by centers µ ,µ and
+A B
+covariancematricesΣ ,Σ intersectifandonlyiftheconvexfunction
+A B
+K(s)=1−sµTΣ µ −(1−s)µTΣ µ +µTΣ µ (28)
+a A a b B b ∩ s ∩
+becomesnegativeforanychoiceofs∈[0,1]. Theproofisgivenin[35]. Here,
+Σ =sΣ +(1−s)Σ (29)
+s A B
+µ =Σ−1(sΣ µ +(1−s)Σ µ ) (30)
+∩ s A a B b
+InthePoisson-likenoisemodel,wecheckiftheellipsoidscenteredatf (x ),f (x )inratespace
+A A B B
+intersect. Theseellipsoidsaregivenby:
+√
+(r−f (x ))T(( N +q)2ϕΣ (x ))−1(r−f (x ))≤1 (31)
+A A A A A A
+√
+(r−f (x ))T(( N +q)2ϕΣ (x ))−1(r−f (x ))≤1 (32)
+B B B B B B
+Here,Σ (x )=diag[f (x )]. Iwilldropthex andx forconciseness,withtheunderstanding
+A A A A A B
+thatthereisanimplicitdependence. Tocheckforintersection,weplugtheseintotheformofthe
+convexfunctionK(s):
+1 √ 1 √
+K(s,x ,x )=1−(f −fT)[ ( N +q)2ϕΣ + ( N +q)2ϕΣ ]−1(f −f )
+A B B A 1−s A s B B A
+15
+Theellispoidscenteredatf (x ),f (x )donotintersectifandonlyifthereexistsans∗ ∈[0,1]
+A A B B
+suchthatK(s∗,x ,x )<0[35]. Rearranging,wecanwritethisas:
+A B
+K(s,x ,x )=1− √ 1 (cid:88) N (f B i(x B )−f A i(x A ))2
+A B ϕ( N +q)2 ( 1 fi(x )+ 1fi(x ))
+i 1−s A A s B B
+ThechoicethatofsthatminimizesK(s,x ,x )changeswithx ,x ,andsowecanlets∗(x ,x )
+A B a b A B
+representthisvalue. Wedefineϕ∗(x ,x )by
+A B
+ϕ∗(x ,x )= 1 (cid:88) N (f B i(x B )−f A i(x A ))2 (33)
+A B N ( 1 fi(x )+ 1 fi(x ))
+i 1−s∗(xA,xB) A A s∗(xA,xB) B B
+Thisdefinitionletsuswrite:
+1
+K(s∗(x ,x ),x ,x )=1− √ ϕ∗(x ,x ) (34)
+A B A B A B
+ϕ( N +q)2
+Now we want ellipsoids centered at f (x ), f (x ) to not intersect for any x , x ,
+A A B B A B
+which amounts to requiring that K(s∗(x ,x ),x ,x ) < 0 for all x ,x , or equivalently
+A B A B A B
+max K(s∗(x ,x ),x ,x )<0. Toputthisinasimilarformasthegaussiancase,we
+xA∈A,xB∈B A B A B
+canwritethisastherequirementthat
+√
+min Nϕ∗(x ,x )>( N +q)2ϕ (35)
+A B
+xA,xB
+A.2 GaussianDistributedMiminumDistances
+A.2.1 GaussianModel
+Wedefineδ =min d(f (x ),f (x )). δ isafunctionofthemapsf ,f ,whichare
+min xA,xB A A B B min A B
+chosenatrandomwithrespecttoaGamma-Poissondistribution. Here,wefindhowthemeanand
+scaleofδ scalewithN.
+min
+ThedistanceinratespaceevaluatedatsomepairofpositionsX ,X forlargeN willlooklike
+A B
+thesquarerootofthesumofthesquareofmanyrandomvariables,asthefiringfieldsarerandomly
+chosen. Inparticular,eachterminthesumitselfisindependentofN,sotogettheroughshapeasa
+functionofN ofthisdistribution,wecandiscardsomeofthefinerdetailsoff ,f .
+A B
+(cid:118)
+(cid:117) N
+(cid:117)(cid:88)
+d(f (X ),f (X ))=(cid:116) (fi(X )−fi(X ))2 (36)
+A A B B A A B B
+i
+The construction of the firing fields of each neuron occurs independently, so Y = (fi(X )−
+i A A
+fi(X ))2representasetofi.i.d.randomvariableswithsomemeananvariancewhichisindependent
+B B
+ofN,allowingustousethecentrallimittheorem. Wecanwritethen
+(cid:118)
+(cid:117) N
+(cid:117)(cid:88)
+d(f (X ),f (X ))=(cid:116) (fi(X )−fi(X ))2 (37)
+A A B B A A B B
+i
+(cid:112)
+= Nµ˜ +Z (38)
+δ 1
+(cid:112) (cid:112)
+= Nµ˜ 1+Z (39)
+δ 2
+Whereµ˜ =E[Y ],andZ isanormallydistributedrandomvariablewithmeanzeroandvariance
+δ i 1
+NVar[Y ],bythecentrallimittheorem,andZ isnormallydistributedwithzeromeanandvariance
+i 2
+Var[Yi]. Asµ˜ isindependentofN,atlargeN,wecanexpandthesquarerootaroundsmallZ :
+Nµ˜2 δ 2
+δ
+(cid:112) 1
+d(f (X ),f (X ))≈ Nµ˜ + Z (40)
+A A B B δ 2 2
+WefindthenthatthedistanceinratespacebetweenX andX isdistributednormallyatlargeN,
+√ A B
+withmeanscalinglike N andvariancethatisindependentofN,
+√
+d(f (X ),f (X ))∼N(µ˜ N,λ˜2)
+A A B B δ δ
+16
+Theconstantsarenotdeterminedhere,thoughwillbecalculatedinasimplercaselater,andfitto
+simulations. Nowµ˜ andλ˜ maydependontheparticularchoiceofpositionsX andX ,butthis
+δ δ A B
+willstillholdatpositionswheretheminimumismostlikelytobefound,andsoP(δ )willalso
+√ min
+haveameanthatgrowswith N andunitvariance,
+√
+δ ∼N(µ N,λ2) (41)
+min δ δ
+foryetdeterminedconstants.
+A.2.2 Ratedependentmodel
+WealsoneedtocalculatethebehaviorforP(Nϕ∗)atlargeN.Westartwiththedefinitionofϕ∗,and
+wanttoshowthatitisgaussiandistributed
+Nϕ∗(x ,x )= (cid:88) N (f B i(x B )−f A i(x A ))2 (42)
+A B ( 1 fi(x )+ 1 fi(x ))
+i 1−s∗(xA,xB) A A s∗(xA,xB) B B
+Again,weconsideranyparticularfixedX ,X . Thenthecontentofthesumcanbeviewedasjust
+A B
+somerandomvariablewithrespecttothedistributionsonf ,f . Theelementsofthesumhave
+A B
+non-zeromeanandvarianceandarei.i.d. Thisisbecauseinconstructingneuralfiringfields,the
+placementoffieldsforneuronsiandj areassumedtobeindependent. Bythecentrallimittheorem,
+wehavethenthat
+Nϕ∗(X ,X )∼N(µ˜ N,λ˜2N) (43)
+A B ϕ ϕ
+orequivalently
+ϕ∗(X ,X )∼N(µ˜ ,λ˜2/N) (44)
+A B ϕ ϕ
+for some constants µ˜ ,λ˜ . The values of µ˜ ,λ˜ may depend on the exact position , but will be
+ϕ ϕ ϕ ϕ
+independentofN atsufficientlylargeN,andsoinparticular,fluctuationsofϕ∗willmostlybedue
+toposition. Thisimpliesthat,asbefore,theminimumvalueNϕ∗ willhaveadistributionwiththe
+min
+samescalingasNϕ∗atanyposition,butwithdifferentconstants.
+Nϕ∗ ∼N(µ N,λ2N) (45)
+min ϕ ϕ
+Figure7: Numericaldemonstrationthattheconstantsµ ,λ ,µ ,λ areindependentofN forlarge
+δ δ ϕ ϕ
+N in1-d,aspredicted.
+17
+A.3 UnionBoundandProductAnsatz
+Inthemaintext,weassumethattheprobabilitythatM contextsaredistinguishableisapproximately
+(M)
+afunctionoftheprobabilitythatanypairis,viaasaturationoftheunionboundP =P 2 . More
+M 2
+transparently,weassume:
+P(M Contextsaredistinguishable)≈ (cid:89) P(iandj aredistinguishable)=PM(M−1)/2 (46)
+2
+(ij)
+StrictlyspeakingthisisaunionboundP ≤PM(M−1)/2,astheprobabilitythatrooms1and2are
+M 2
+distinguishableandrooms2and3areisnotindependent. Wearguethatthisboundisapproximately
+saturatedatlargeN ifnoiseisnottoostrong,bydemonstratingeachcontextoccupiesavanishingly
+smallrelativevolumeinratespaceasN getslarge. Thisargumentisaroughreasontothinkthatthe
+ansatzistrue,butnotanexactproof.
+Weconsidertherateindependentnoisemodeltostart. Thetotalavailablevolumeinratespaceis
+≈FN . HowwehaveincorporatednoiseletsneuronfiringratesextendpastF ,asitisamax
+max max
+setbeforenoise,andsofiringratescan"spillout"ofthisN dimensionalbox. Foronedimensional
+(cid:113)
+rooms,f carvesoutacurveoflengthl= (cid:82) dx (cid:80) (dfi)2inratespace. ForDdimensionalrooms,
+A i dx
+f definesasurface,whichhasarea
+A
+(cid:90)
+(cid:112)
+S = ddx detg (47)
+Here g = JTJ , with J being the jacobian J = ∂ fj. In D dimensional rooms, g will be a
+f f f f xi
+matrix,witheachelementscalingnofasterthanlinearlyinN. Thedeterminantthencanscaleno
+fasterthanND/2,soatworst,weexpectthesurfaceareatoscaleinN like
+S ∝cDND/2 (48)
+wherecissomeconstant. Togofromthesurfacescarvedoutbythemapsf tothevolumesoccupied
+bythefiringratesoftheneurons,weneedtoconsidertheeffectofaddingnoise. Nowwecanroughly
+approximatetheeffectofnoisebyputtinganN −Dsphericalcrosssectiontoeachpointalongthe
+surface. Weavoidexactintegralsasweprimarilycareaboutthescaling. Theradiusofeachcross
+√
+sectionisσ N,andsoeachcrosssectionhasavolume:
+√ πN/2 √
+V (σ N)= (σ N)N−D
+N−D Γ(N +1)
+2
+Or,usingstirlingsapproximationtogetthescalinginN,
+√ 1 2πe
+V (σ N)∼ ( )N/2−D/2(σ2N)N/2−D/2 (49)
+N−D (cid:112) (N −D)π N −D
+1 N
+= (cid:112) (2πeσ2 ) N− 2 D (50)
+(N −D)π N −D
+TheapproximatevolumeinratespaceofthethickenedmanifoldsthenscalesnofasterinN than
+1 N
+V r ∝cDND/2 (cid:112) (N −D)π (2πeσ2 N −D ) N− 2 D (51)
+AssumingthedimensionoftheenvironmentDissmall(forphysicalenvironments,Dis1,2,or3,
+butwemightbeinterestedinhigherdimensionalabstract’environments’)comparedtoN andN is
+large,thenatworstthescalingis
+V r ∝N D 2 −1 (2πeσ2) N− 2 D (52)
+Wehaveneglectedthevolumeofthe"caps"ofthesemanifolds. Forexample,theonedimensional
+rooms define a tube in rate space, and have half-spherical caps on each end. The volume of the
+√
+N dimensionalsphereofradius Nσ2 is √1 (2πeσ2)N/2. Inhigherdimensions,thisadditional
+Nπ
+18
+component would scale very roughly like the length of the boundary of the surface S times the
+volumeoftheN −D+1sphere.
+Theproportionofthevolumeofthethickenedmanifoldtothetotalvolumeofratespace,V /FN ,
+r max
+isthenvanishinginN providedthattheneuronsarenottoonoisy. Wegetanapproximatecondition
+√
+oftheform 2πeσ <F . Amoreprecisecalculationmightimproveordeterioratethisbound,
+max
+but interestingly this mimics typical conditions on signal to noise ratios. Each room occupies a
+vanishinglysmallfractionofthetotalvolumeinratespaceasN growslarge. Similarargumentshold
+fortheellipsoidalnoisemodel,aseachellipsoidoccupiesasmallervolumethanitsosculatingsphere.
+A.4 ExponentiallyManyRooms
+Here,wefindthescalingofthenumberofroomsM withrespecttothenumberofneuronsN. We
+willusetheproductansatz:
+P =PM(M−1)/2
+M 2
+Wecaninvertthisequationbytakingthelogarithmofbothside,thensolvingthequadraticformula
+forM,tofindthat
+(cid:115)
+log(P ) 1
+M(N)= 2 M + +1/2 (53)
+log(P (N)) 4
+2
+Here,wecanletP representaconfidence. Forexample,ifweareokaywithbeing95%percent
+M
+confidentinstoringmultiplerooms,thenM(N)becomesanequationpurelydependentonP (N).
+2
+NowP (N)is,atlargeN,equaltoanintegralofagaussianforbothnoisemodels. Westartwiththe
+2
+simplernoisemodel. Wehavethat
+√
+P =P(δ >2σ( N +q)) (54)
+2
+√
+=1−F(2σ( N +q)) (55)
+√ √
+2σ( N +q)−µ N
+≈1−Φ( δ ) (56)
+λ
+δ
+Here,F representsthecumulativedistribution,andΦisthecumulativedistributionofthestandard
+normal distribution. The approximation comes from the central limit theorem at large N, with
+√
+µ =E(δ )/ N andλ2 =Var(δ )arebothindependentofN. Thiscanbewrittenintermsof
+δ min δ min
+theerrorfunctionforthefirstnoisemodelas
+√ √
+1 2σ( N +q)−µ N
+P (N)→ (1−erf( √ δ )) (57)
+2,δ 2 2λ
+√ δ√
+1 Nµ −2σ( N +q))
+= (1+erf(( δ √ )) (58)
+2 2λ
+δ
+Wecanbringthesecondnoisemodelintoasimilarform:
+√
+P =P( min Nϕ∗(x ,x )>( N +q)2ϕ) (59)
+2,ϕ A B
+xA,xB√
+=1−F(( N +q)2ϕ) (60)
+√
+( N +q)2ϕ−Nµ
+→1−Φ( √ ϕ) (61)
+λ N
+ϕ
+√
+1 ( N +q)2ϕ−Nµ
+= (1−erf( √ √ ϕ)) (62)
+2 2λ N
+ϕ
+√
+1 Nµ −( N +q)2ϕ
+= (1+erf( ϕ√ √ )) (63)
+2 2λ N
+ϕ
+Here,F isthecumulativedistributionforϕ∗ N,µ = E(ϕ∗ )/N andλ2 = Var(ϕ∗ )/N are
+min ϕ min ϕ min
+bothindependentofN.
+19
+Inbothnoisemodels,wecanwriteP = 1(1+erf(u)),withugiveninequation58and63forthe
+2 2
+twonoisemodels,respectively. P approacheseither1or0forlargeN,dependingonthestrengthof
+2
+thenoisewithrespecttothemeandistanceµ. Wehavethen:
+(cid:115)
+log(P ) 1
+M(N)= 2 M + +1/2 (64)
+log(1(1+erf(u))) 4
+2
+Inthenoisyregime,thisapproaches1atlargeN. Intheweaktomoderatenoiseregime,wehave
+thatuapproaches∞asN approaches∞inbothmodels,andtheerrorfunctionapproaches1. We
+areinterestedinitsasymptoticbehaviour. Wecanusethefollowingexpansionatlargeu:
+e−u2 1
+erfu=1− √ (u−1− u−3+...) (65)
+π 2
+Expandingtoleadingorderinuthengives:
+(cid:118)
+(cid:117) log(P )
+M(N)≈(cid:117) (cid:116) 2 log(1− 1exp √ (−u2)( M u−1+O(u−3)) (66)
+2 π
+Nowwecanexpandthelogarithmbynoticingthatforsmallvalues,
+(cid:115) (cid:114)
+A A
+− +B ≈ +O(x2 1) (67)
+ln(1−x) x
+Sotoleadingorder,wehave:
+(cid:118)
+(cid:117) log(1/P )
+M(N)≈(cid:117) (cid:116) −2 log(1− 1exp √ (− M u2)u−1) (68)
+2 π
+(cid:112) 1exp(−u2)
+≈ 2log1/P [ √ u−1]−1/2 (69)
+m 2 π
+(cid:113)√ √
+=2 πlog(1/P m ) ue1 2 u2 (70)
+AtlargeN,theconstantqisnegligible,andsowecandropit,givingufortherateindependentand
+√ √
+theratedependentmodelasu= µ √δ−2σ N,andu= µ √ϕ−ϕ N,respectively. Plugginginforboth
+2λδ 2λϕ
+noisemodelsgives
+(cid:114)
+µ −2σ 1 µ −2σ
+Model1: M(N)≈ ln(1/P ) δ (8πN)1/4exp[ ( δ )2N] (71)
+M λ 4 λ
+δ δ
+(cid:115)
+µ −ϕ 1 µ −ϕ
+Model2: M(N)≈ ln(1/P ) ϕ (8πN)1/4exp[ ( ϕ )2N] (72)
+M λ 4 λ
+ϕ ϕ
+Inbothnoisemodels,thenumberofstorablecontextsasafunctionofN scaleslike
+M(N)∼N1/4eγN (73)
+withtheconstantγ ineachnoisemodelbeinggivenby
+√
+E[δ ]/ N −2σ E[ϕ∗ ]−ϕ
+γ =( min )2 γ =( min )2 (74)
+δ (cid:112) ϕ (cid:112)
+2 Var(δ ) 2 NVar([ϕ∗ ])
+min min
+Thesevaluesareshownforvariousnoiselevels,firingfieldwidths,androomsizesinthemaintext
+figure3andthesupplementalfigure8.
+20
+Figure8: ThevalueoftheexponentialγatlargeN asafunctionoffiringfieldwidthandnoise. From
+lefttorightare1drooms,Gaussiannoise;1drooms,Poisson-likenoise;2drooms,Gaussiannoise;
+and2drooms,Poisson-likenoise. Roomsincreaseinsizefromtoptobottom(1m,2m,4m,8m,and
+16mrooms,and1m2,2m2,4m2,8m2,and16m2rooms). UnderourPoissonGammastatisticsfor
+thenumberofactivefields,weexpectinsmallerrooms,wherethenumberofactivefieldsissmall,to
+preferencelargefieldsfortheobjectiveofcontextsegragation. Conversely,inlargerooms,extremely
+largefieldsbecomeharmfulforcontextsegregation. Whitedemarcatestheregionwheredecoding
+multiplecontextsispossible. ThePoisson-likemodelisgenerallymuchmorerobusttonoise.
+21
+A.4.1 InfiniteWidthDerivations
+Forneuronswithinfinitewidth,thenumberofstorablecontextsispurelyafunctionofthenumber
+ofneuronswhichhaveactivefields. Inthislimit,ifthereareN neurons,eachcontextgetsabinary
+identifier. ConsidertwocontextsAandB. Ifeachneuronhasaprobabilityθofbeingactive,the
+distributionofthehammingdistancebetweenthesetwocontextsisgivenby
+(cid:18) (cid:19)
+N
+P(H =k)= [θ2+(1−θ)2]N−k[2θ(1−θ)]k (75)
+k
+√
+Now we are interested in P(mind(f (x ),f (x )) > 2σ N). In the infinite width limit, the
+A √A B B
+spatialdepedenceislost,andd→f H. Wecanwritethenthattheprobabilitythattworooms
+max
+areseparableis
+4σ2 (cid:88) N
+P(H > N)= P(H =k) (76)
+f2
+max k=⌈ 4σ2 N⌉
+fm 2 ax
+ThedistributionP(H)iswellapproximatedbyagaussianatlargeN,withmeanµ=2Nq(1−q)
+and variance σ2 = 2N(1−θ)θ[(1−θ)2 +θ]. From this, we get an integral similar to the one
+arrivedatinthemaintext. AtlargeN,theprobabilitythattworoomsareseparableapproachesoneif
+2θ(1−θ)> 4σ2 . Roomsareoptimallyseparableintheinfinitewidthlimitwhenθ =1/2.
+f2
+max
+A.5 TheCramer-RaoBound
+Toquantifyapopulationlevelcodeforposition,weconsiderestimatorsxˆofpositionconstructed
+from population level firing, and compare to true position. In one dimension, the quality of any
+estimatorxˆataparticularpositionisboundedbelowbytheinverseFisherinformation:
+⟨(xˆ−x)2⟩ =Var(xˆ)≥I−1(x) (77)
+r|x
+Inonedimension,theFishermetricisgivenby:
+∂
+I =E [( l)2] (78)
+r ∂x
+Wherelistheloglikelihoodoffiringratesgivenposition.
+Inhigherdimensions,thisCramer-Raoboundisastatementaboutcovariance:
+⟨(xˆ−x)(xˆ−x)T⟩≥I−1(x) (79)
+Here, ≥indicatesthatthedifferenceoftheLHandRHsideispositivesemi-definite. Togetthe
+mean-squarederror,weneedtotakeatraceovertheinverseFisherinformationmetric:
+⟨(xˆ−x)2⟩=Tr⟨(xˆ−x)(xˆ−x)T⟩ (80)
+=TrCov(xˆ)≥Tr(I−1(x)) (81)
+Inhigherdimensions, Cov(xˆ) ≥ I−1(x)isastatementaboutthedifferencebeingpositivesemi-
+definite,whichleadstoourtraceconditionabove. TheFisherMetricisgivenby:
+I =nE [(∇ l)(∇ l)T]=−nE [∇ ∇Tl] (82)
+r x x r x x
+TheaveragesintheCramer-Raoboundaretakenwithrespecttofiringratesgivenpositions. Aswe
+areinterestedinhavinggoodspatialresolutionacrosspositionsandcontexts,weadditionallytake
+averagesoverboth. Below,wepluginthelog-likelihoodsforbothnoisemodels.
+A.5.1 GaussianNoise
+In1dimension,wehavethat
+(cid:88) (cid:88) 1
+l= lnP(r |x)=− (r −fi(x))2 (83)
+i 2σ2 i A
+i i
+22
+TheFisherInformationthenisgivenby
+∂
+I =nE [( l)2] (84)
+r ∂x
+1 (cid:88) (cid:88)
+= E [ fi′(x)(r −fi(x)) fj′(x)(r −fj(x))] (85)
+σ4 r A i A A j A
+i j
+Wehavethat
+E [r r ]=fi(x)fj(x)+δ σ2 ; E [r ]=fi(x) (86)
+r i j A A ij r i A
+Sothefisherinformationis
+∂
+I =nE [( l)2] (87)
+r ∂x
+1 (cid:88)
+= E [ fi′(x)fj′(x)(r r −r fi(x)−r fj(x)+fi(x)fj(x))] (88)
+σ4 r A A i j j A i A A A
+i,j
+1 (cid:88)
+= [ fi′(x)fj′(x)(fj(x)fi(x)+σ2δ −2fj(x)fi(x)+fi(x)fj(x))] (89)
+σ4 A A A A ij A A A A
+i,j
+1 (cid:88)
+= [ fi′(x)2] (90)
+σ2 A
+i
+TheCRboundwillbesmallwhenthisislarge. Thisimpliesthat, thewiderthefiringfields, the
+smallerthederivativesoffi willbeatmostlocations,whichleadstoasmallerFisherInformation,
+A
+andsoaworsebound. Thisleadstotypicallynarrowfields. However,ifweareinaregionwhereall
+firingfieldsarezero,theFIvanishes,andtheboundexplodes. Thisimpliesthatthewidthsshouldn’t
+besosmallthatthereareregionswithnofiringfields. Wealsohavethatasthenoiseincrease,the
+informationdecreases,andtheboundgetsworse,asweexpect.
+In2d,wereplacederivativeswithdivergences,andtakeatraceattheend. Wehave:
+(cid:88) 1
+∇ l=−∇ (r −fi(x))2 (91)
+x x 2σ2 i A
+i
+(cid:88) 1
+=− (r −fi(x))∇fi(x) (92)
+σ2 i A A
+i
+Goingthroughthesamestepsasbefore,wefindthatwejustreplacetheordinaryproductfrombefore
+withanouterproduct:
+1 (cid:88)
+I = [ (∇fi(x))(∇fi(x))T] (93)
+σ2 A A
+i
+A.5.2 RateDependentNoise
+Inthesecondnoisemodel,
+1 1
+P(r |x)= exp− (r −fi(x))2 (94)
+i (cid:112) 2πϕfi(x) 2ϕfi(x) i A
+A A
+Ourloglikelihoodis
+(cid:88) 1 (cid:113)
+l= [− (r −fi(x))2−ln 2πϕfi(x)] (95)
+2ϕfi(x) i A A
+i A
+(cid:88) 1 1
+= [− (r −fi(x))2− lnfi(x)]+... (96)
+2ϕfi(x) i A 2 A
+i A
+23
+Thistime,wewillstartwithdivergences,anddemotethemfor1drooms. Wehave:
+(cid:88) 1 1 1
+∇ l= [− (r −fi)∇fi + (r −fi)2∇fi − ∇fi] (97)
+x ϕfi i A A 2ϕfi2 i A A 2fi A
+i A A A
+(cid:88) (fi(x)2+ϕfi(x)−r2)
+= [− A A i ∇fi] (98)
+2ϕfi(x)2 A
+i A
+TheFisherInformationthenis
+(cid:88) E [( (f A i(x)2+ϕf A i(x)−r i 2) )( (f A j(x)2+ϕf A j(x)−r j 2) )]∇fi ⊗∇fj (99)
+r 2ϕfi(x)2 2ϕfj(x)2 A A
+ij A A
+Wehavethat
+E [r2]=fi(x)2+ϕfi(x) (100)
+r i A A
+E [r2r2]| =(fi(x)2+ϕfi(x))(fj(x)2+ϕfj(x)) (101)
+r i j i̸=j A A A A
+E [r4]=fi(x)4+3ϕ2fi(x)2+6fi(x)2ϕfi(x)2 (102)
+r i A A A A
+=(fi(x)2+ϕfi(x))(fi(x)2+ϕfi(x))+4ϕfi(x)3+2ϕ2fi(x)2 (103)
+A A A A A A
+E [r2r2]=(fi(x)2+ϕfi(x))(fj(x)2+ϕfj(x))+δ [4ϕfi(x)3+2ϕ2fi(x)2] (104)
+r i j A A A A ij A A
+(105)
+Mosttermsintheexpectationcancel,exceptforwherei=j:
+(cid:88) 4ϕfi(x)3+2ϕ2fi(x)2
+I = ( A A ∇fi ⊗∇fi (106)
+(2ϕfi(x)2)2 A A
+i A
+(cid:88) 1 1
+= ( + )∇fi ⊗∇fi (107)
+ϕfi(x) 2fi(x)2 A A
+i A A
+In1-d,wereplacetheouterproductandthedivergenceswithordinaryscalarproductandderivatives,
+respectively.
+A.6 BiasingTowardsBoundaries
+Weinvestigatedtheeffectofbiasingplacecellcenterstowardstheboundaryofenvironments. In
+1-d, we bias the place cell centers toward boundaries by drawing centers from a symmetric beta
+distribution,sothatthebiascanbecharacterizedbythe1parameterfamilyofdistributions:
+Γ(2α)
+P(µ)=β(µ/L;α,α)= (µ/L)α−1(1−µ/L)α−1 (108)
+Γ(α)2
+Weexpectanimprovementindecodingmultiplecontextswhenthetotalsquaredactivitynearthe
+bulkandnearthecenteris,onaverage,equalwithinacontext. Inonedimension,foranenvironment
+oflengthL,wewantthenapproximateequality:
+(cid:88) (cid:88)
+⟨ f (0)2⟩ =⟨ f (L/2)2⟩ (109)
+i A i A
+i i
+Theaverageiswithrespecttonumberoffiringfieldscentersandtheirlocation. Ifweassumefor
+simplicitythateachneuronhasexactlyonefiringfield,thenwehaveequalitywhen
+⟨f m 2 ax e− w 4 2 µ2 ⟩ µ =⟨f m 2 ax e− w 4 2 (µ−L/2)2 ⟩ (110)
+Takingtheaveragewithrespecttothebetadistribution,theoptimalbiascanbefoundthenbyfinding
+wherethefollowingintegraliszero:
+Γ(2α)(cid:90) L
+dµ(µ/L)α−1(1−µ/L)α−1(e− w 4 2 µ2 −e− w 4 2 (µ−L/2)2 ) (111)
+Γ(α)2
+0
+Or,
+(cid:90) 1
+dxxα−1(1−x)α−1(e−4
+w
+L
+2
+2 x−e−4
+w
+L
+2
+2 (x−1/2)2
+)=0 (112)
+0
+24
+Figure9: Betadistribution,fromwhichwedrawplacecellcenters. αisadegreeofuniformity,with
+α=1reproducingtheuniformdistribution.
+Tomakethiscalculationnumericallystable,wedotheintegraloveraninteriorregion(smallϵ)
+(cid:90) 1−ϵ
+dxxα−1(1−x)α−1(e−4
+w
+L
+2
+2 x−e−4
+w
+L
+2
+2 (x−1/2)2
+)=0 (113)
+ϵ
+Wecaninvertthisnumericallytogetanapproximationoftheoptimalαbasedonequalizationoffiring
+densitiesinthebulkandattheboundary. Wefinddecentagreementbetweenthisroughcalculation
+andthetrueoptimalbiasfoundinthemaintextforbothnoisemodels,slightlyoverestimatingand
+underestimatingtherateindependentandtheratedependentmodel,respectively(Fig5CoftheMain
+Text).
+A.7 AdditionalComputationalDetails
+Toreconstructprobabilitydistributionsfordistances,wegeneratealargenumberofpairsofrooms
+withafixednumberofneuronsandwidths,calculatedistancesinratespace,andthenfindtheone
+dimensionaldistributionsoverdistancesbytakingakerneldensityestimateoverthesegenerated
+distances. Althoughthespaceofpossiblecurvesinourratespaceislarge,sinceweonlyneedto
+reconstructthe1dimensionaldistributionsinδ andϕ ,whichareasymptoticallygaussian,
+min min
+samplingthisspacesuffices. Wecreatebetween1000and10000samplesineachnumericalexperi-
+ment. Tospeedupcalculations,weperformthesamplingofsurfacesinparallelusingPyTorch[54].
+Wethenusescikitlearns’sbuiltinKerneldensityestimatorwithagaussiankerneltoreproducethe
+distributionsinδ andϕ [55]. Asthereconstructeddistributioncandependheavilyonthe
+min min
+choiceofbandwidthusedforthekernel,wecalculatethekerneldensitymultipletimesforvarious
+choicesofthebandwidth,andpickthebestbandwidthvia5-foldcrossvalidation. Allcodewasrun
+onamachinewithanIntelXeon-2145processorandwithaTitanXpGPUforparallelizedworkflows.
+25
+NeurIPSPaperChecklist
+1. Claims
+Question: Dothemainclaimsmadeintheabstractandintroductionaccuratelyreflectthe
+paper’scontributionsandscope?
+Answer: [Yes]
+Justification: Therearethreemainclaimslayedoutintheabstract. Theseareaboutthe
+exponentialcapacityoftheplacecode,thetradeoffbetweenresolutionandcapacity,and
+imporvedperformanceduetobiasingtowardsboundaries. Allofthesepointsareaddressed
+inthemaintext.
+Guidelines:
+• The answer NA means that the abstract and introduction do not include the claims
+madeinthepaper.
+• Theabstractand/orintroductionshouldclearlystatetheclaimsmade,includingthe
+contributionsmadeinthepaperandimportantassumptionsandlimitations. ANoor
+NAanswertothisquestionwillnotbeperceivedwellbythereviewers.
+• Theclaimsmadeshouldmatchtheoreticalandexperimentalresults,andreflecthow
+muchtheresultscanbeexpectedtogeneralizetoothersettings.
+• Itisfinetoincludeaspirationalgoalsasmotivationaslongasitisclearthatthesegoals
+arenotattainedbythepaper.
+2. Limitations
+Question: Doesthepaperdiscussthelimitationsoftheworkperformedbytheauthors?
+Answer: [Yes]
+Justification: The main limitations of the work, as well as future directions that might
+addresssomeoftheselimitations,arelayedoutinthediscussionportionofthepaper.
+Guidelines:
+• TheanswerNAmeansthatthepaperhasnolimitationwhiletheanswerNomeansthat
+thepaperhaslimitations,butthosearenotdiscussedinthepaper.
+• Theauthorsareencouragedtocreateaseparate"Limitations"sectionintheirpaper.
+• Thepapershouldpointoutanystrongassumptionsandhowrobusttheresultsareto
+violationsoftheseassumptions(e.g.,independenceassumptions,noiselesssettings,
+modelwell-specification,asymptoticapproximationsonlyholdinglocally).Theauthors
+shouldreflectonhowtheseassumptionsmightbeviolatedinpracticeandwhatthe
+implicationswouldbe.
+• Theauthorsshouldreflectonthescopeoftheclaimsmade,e.g.,iftheapproachwas
+onlytestedonafewdatasetsorwithafewruns. Ingeneral,empiricalresultsoften
+dependonimplicitassumptions,whichshouldbearticulated.
+• Theauthorsshouldreflectonthefactorsthatinfluencetheperformanceoftheapproach.
+Forexample,afacialrecognitionalgorithmmayperformpoorlywhenimageresolution
+isloworimagesaretakeninlowlighting. Oraspeech-to-textsystemmightnotbe
+usedreliablytoprovideclosedcaptionsforonlinelecturesbecauseitfailstohandle
+technicaljargon.
+• Theauthorsshoulddiscussthecomputationalefficiencyoftheproposedalgorithms
+andhowtheyscalewithdatasetsize.
+• If applicable, the authors should discuss possible limitations of their approach to
+addressproblemsofprivacyandfairness.
+• Whiletheauthorsmightfearthatcompletehonestyaboutlimitationsmightbeusedby
+reviewersasgroundsforrejection,aworseoutcomemightbethatreviewersdiscover
+limitationsthataren’tacknowledgedinthepaper. Theauthorsshouldusetheirbest
+judgmentandrecognizethatindividualactionsinfavoroftransparencyplayanimpor-
+tantroleindevelopingnormsthatpreservetheintegrityofthecommunity. Reviewers
+willbespecificallyinstructedtonotpenalizehonestyconcerninglimitations.
+3. TheoryAssumptionsandProofs
+26
+Question: Foreachtheoreticalresult,doesthepaperprovidethefullsetofassumptionsand
+acomplete(andcorrect)proof?
+Answer: [Yes]
+Justification: Theproofofmoststatementsarelayedoutinthesupplemental,tosaveon
+space.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludetheoreticalresults.
+• Allthetheorems, formulas, andproofsinthepapershouldbenumberedandcross-
+referenced.
+• Allassumptionsshouldbeclearlystatedorreferencedinthestatementofanytheorems.
+• Theproofscaneitherappearinthemainpaperorthesupplementalmaterial, butif
+theyappearinthesupplementalmaterial,theauthorsareencouragedtoprovideashort
+proofsketchtoprovideintuition.
+• Inversely,anyinformalproofprovidedinthecoreofthepapershouldbecomplemented
+byformalproofsprovidedinappendixorsupplementalmaterial.
+• TheoremsandLemmasthattheproofreliesuponshouldbeproperlyreferenced.
+4. ExperimentalResultReproducibility
+Question: Doesthepaperfullydisclosealltheinformationneededtoreproducethemainex-
+perimentalresultsofthepapertotheextentthatitaffectsthemainclaimsand/orconclusions
+ofthepaper(regardlessofwhetherthecodeanddataareprovidedornot)?
+Answer: [NA]
+Justification: Wedon’tperformanyexperimentswithdata. However,howallnumerical
+resultsarearrivedataresufficientlyexplainedsothattheycouldbereproduced.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Ifthepaperincludesexperiments,aNoanswertothisquestionwillnotbeperceived
+well by the reviewers: Making the paper reproducible is important, regardless of
+whetherthecodeanddataareprovidedornot.
+• Ifthecontributionisadatasetand/ormodel,theauthorsshoulddescribethestepstaken
+tomaketheirresultsreproducibleorverifiable.
+• Dependingonthecontribution,reproducibilitycanbeaccomplishedinvariousways.
+Forexample,ifthecontributionisanovelarchitecture,describingthearchitecturefully
+mightsuffice,orifthecontributionisaspecificmodelandempiricalevaluation,itmay
+benecessarytoeithermakeitpossibleforotherstoreplicatethemodelwiththesame
+dataset,orprovideaccesstothemodel. Ingeneral. releasingcodeanddataisoften
+onegoodwaytoaccomplishthis,butreproducibilitycanalsobeprovidedviadetailed
+instructionsforhowtoreplicatetheresults,accesstoahostedmodel(e.g.,inthecase
+ofalargelanguagemodel),releasingofamodelcheckpoint,orothermeansthatare
+appropriatetotheresearchperformed.
+• WhileNeurIPSdoesnotrequirereleasingcode,theconferencedoesrequireallsubmis-
+sionstoprovidesomereasonableavenueforreproducibility,whichmaydependonthe
+natureofthecontribution. Forexample
+(a) Ifthecontributionisprimarilyanewalgorithm,thepapershouldmakeitclearhow
+toreproducethatalgorithm.
+(b) Ifthecontributionisprimarilyanewmodelarchitecture,thepapershoulddescribe
+thearchitectureclearlyandfully.
+(c) Ifthecontributionisanewmodel(e.g.,alargelanguagemodel),thenthereshould
+eitherbeawaytoaccessthismodelforreproducingtheresultsorawaytoreproduce
+themodel(e.g.,withanopen-sourcedatasetorinstructionsforhowtoconstruct
+thedataset).
+(d) We recognize that reproducibility may be tricky in some cases, in which case
+authorsarewelcometodescribetheparticularwaytheyprovideforreproducibility.
+Inthecaseofclosed-sourcemodels,itmaybethataccesstothemodelislimitedin
+someway(e.g.,toregisteredusers),butitshouldbepossibleforotherresearchers
+tohavesomepathtoreproducingorverifyingtheresults.
+27
+5. Openaccesstodataandcode
+Question: Doesthepaperprovideopenaccesstothedataandcode,withsufficientinstruc-
+tionstofaithfullyreproducethemainexperimentalresults,asdescribedinsupplemental
+material?
+Answer: [No]
+Justification: Allnumericalexperimentsperformedaresimpleenoughtoreproducewithout
+accesstocode. Codeisavailableuponrequest.
+Guidelines:
+• TheanswerNAmeansthatpaperdoesnotincludeexperimentsrequiringcode.
+• Please see the NeurIPS code and data submission guidelines (https://nips.cc/
+public/guides/CodeSubmissionPolicy)formoredetails.
+• Whileweencouragethereleaseofcodeanddata,weunderstandthatthismightnotbe
+possible,so“No”isanacceptableanswer. Paperscannotberejectedsimplyfornot
+includingcode,unlessthisiscentraltothecontribution(e.g.,foranewopen-source
+benchmark).
+• Theinstructionsshouldcontaintheexactcommandandenvironmentneededtorunto
+reproducetheresults. SeetheNeurIPScodeanddatasubmissionguidelines(https:
+//nips.cc/public/guides/CodeSubmissionPolicy)formoredetails.
+• Theauthorsshouldprovideinstructionsondataaccessandpreparation,includinghow
+toaccesstherawdata,preprocesseddata,intermediatedata,andgenerateddata,etc.
+• Theauthorsshouldprovidescriptstoreproduceallexperimentalresultsforthenew
+proposedmethodandbaselines. Ifonlyasubsetofexperimentsarereproducible,they
+shouldstatewhichonesareomittedfromthescriptandwhy.
+• Atsubmissiontime, topreserveanonymity, theauthorsshouldreleaseanonymized
+versions(ifapplicable).
+• Providingasmuchinformationaspossibleinsupplementalmaterial(appendedtothe
+paper)isrecommended,butincludingURLstodataandcodeispermitted.
+6. ExperimentalSetting/Details
+Question: Doesthepaperspecifyallthetrainingandtestdetails(e.g.,datasplits,hyper-
+parameters, how they were chosen, type of optimizer, etc.) necessary to understand the
+results?
+Answer: [NA]
+Justification: Wedonothavetrainingortestdatasets.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Theexperimentalsettingshouldbepresentedinthecoreofthepapertoalevelofdetail
+thatisnecessarytoappreciatetheresultsandmakesenseofthem.
+• Thefulldetailscanbeprovidedeitherwiththecode,inappendix,orassupplemental
+material.
+7. ExperimentStatisticalSignificance
+Question:Doesthepaperreporterrorbarssuitablyandcorrectlydefinedorotherappropriate
+informationaboutthestatisticalsignificanceoftheexperiments?
+Answer: [NA]
+Justification: Statisticalsignificanceisnotapartofourtheoreticalanalysis.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Theauthorsshouldanswer"Yes"iftheresultsareaccompaniedbyerrorbars,confi-
+denceintervals,orstatisticalsignificancetests,atleastfortheexperimentsthatsupport
+themainclaimsofthepaper.
+• Thefactorsofvariabilitythattheerrorbarsarecapturingshouldbeclearlystated(for
+example,train/testsplit,initialization,randomdrawingofsomeparameter,oroverall
+runwithgivenexperimentalconditions).
+28
+• Themethodforcalculatingtheerrorbarsshouldbeexplained(closedformformula,
+calltoalibraryfunction,bootstrap,etc.)
+• Theassumptionsmadeshouldbegiven(e.g.,Normallydistributederrors).
+• Itshouldbeclearwhethertheerrorbaristhestandarddeviationorthestandarderror
+ofthemean.
+• It is OK to report 1-sigma error bars, but one should state it. The authors should
+preferablyreporta2-sigmaerrorbarthanstatethattheyhavea96%CI,ifthehypothesis
+ofNormalityoferrorsisnotverified.
+• Forasymmetricdistributions,theauthorsshouldbecarefulnottoshowintablesor
+figuressymmetricerrorbarsthatwouldyieldresultsthatareoutofrange(e.g. negative
+errorrates).
+• Iferrorbarsarereportedintablesorplots,Theauthorsshouldexplaininthetexthow
+theywerecalculatedandreferencethecorrespondingfiguresortablesinthetext.
+8. ExperimentsComputeResources
+Question: Foreachexperiment,doesthepaperprovidesufficientinformationonthecom-
+puterresources(typeofcomputeworkers,memory,timeofexecution)neededtoreproduce
+theexperiments?
+Answer: [Yes]
+Justification: Asthenumericsarenotthefocusofthepaper,numericaldetailsandcompute
+resourcesareprovidedinthesupplemental
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• ThepapershouldindicatethetypeofcomputeworkersCPUorGPU,internalcluster,
+orcloudprovider,includingrelevantmemoryandstorage.
+• Thepapershouldprovidetheamountofcomputerequiredforeachoftheindividual
+experimentalrunsaswellasestimatethetotalcompute.
+• Thepapershoulddisclosewhetherthefullresearchprojectrequiredmorecompute
+thantheexperimentsreportedinthepaper(e.g.,preliminaryorfailedexperimentsthat
+didn’tmakeitintothepaper).
+9. CodeOfEthics
+Question: Doestheresearchconductedinthepaperconform, ineveryrespect, withthe
+NeurIPSCodeofEthicshttps://neurips.cc/public/EthicsGuidelines?
+Answer: [Yes]
+Justification: Wedonotbelievethatourworkhasanyharmfulconsequencesaslayedoutin
+theCodeofEthics.
+Guidelines:
+• TheanswerNAmeansthattheauthorshavenotreviewedtheNeurIPSCodeofEthics.
+• IftheauthorsanswerNo,theyshouldexplainthespecialcircumstancesthatrequirea
+deviationfromtheCodeofEthics.
+• Theauthorsshouldmakesuretopreserveanonymity(e.g.,ifthereisaspecialconsid-
+erationduetolawsorregulationsintheirjurisdiction).
+10. BroaderImpacts
+Question: Does the paper discuss both potential positive societal impacts and negative
+societalimpactsoftheworkperformed?
+Answer: [NA]
+Justification: Inthiswork,weprimarilystudyhippocampalcoding,whichlikelywillnot
+havesocietalimpactspastabetterunderstandingofthehippocampus.
+Guidelines:
+• TheanswerNAmeansthatthereisnosocietalimpactoftheworkperformed.
+• IftheauthorsanswerNAorNo,theyshouldexplainwhytheirworkhasnosocietal
+impactorwhythepaperdoesnotaddresssocietalimpact.
+29
+• Examplesofnegativesocietalimpactsincludepotentialmaliciousorunintendeduses
+(e.g.,disinformation,generatingfakeprofiles,surveillance),fairnessconsiderations
+(e.g.,deploymentoftechnologiesthatcouldmakedecisionsthatunfairlyimpactspecific
+groups),privacyconsiderations,andsecurityconsiderations.
+• Theconferenceexpectsthatmanypaperswillbefoundationalresearchandnottied
+toparticularapplications,letalonedeployments. However,ifthereisadirectpathto
+anynegativeapplications,theauthorsshouldpointitout. Forexample,itislegitimate
+topointoutthatanimprovementinthequalityofgenerativemodelscouldbeusedto
+generatedeepfakesfordisinformation. Ontheotherhand,itisnotneededtopointout
+thatagenericalgorithmforoptimizingneuralnetworkscouldenablepeopletotrain
+modelsthatgenerateDeepfakesfaster.
+• Theauthorsshouldconsiderpossibleharmsthatcouldarisewhenthetechnologyis
+being used as intended and functioning correctly, harms that could arise when the
+technologyisbeingusedasintendedbutgivesincorrectresults,andharmsfollowing
+from(intentionalorunintentional)misuseofthetechnology.
+• Iftherearenegativesocietalimpacts,theauthorscouldalsodiscusspossiblemitigation
+strategies (e.g., gated release of models, providing defenses in addition to attacks,
+mechanismsformonitoringmisuse,mechanismstomonitorhowasystemlearnsfrom
+feedbackovertime,improvingtheefficiencyandaccessibilityofML).
+11. Safeguards
+Question: Doesthepaperdescribesafeguardsthathavebeenputinplaceforresponsible
+releaseofdataormodelsthathaveahighriskformisuse(e.g.,pretrainedlanguagemodels,
+imagegenerators,orscrapeddatasets)?
+Answer: [NA]
+Justification: Nosuchmodelsordatasetsareinvolved.
+Guidelines:
+• TheanswerNAmeansthatthepaperposesnosuchrisks.
+• Releasedmodelsthathaveahighriskformisuseordual-useshouldbereleasedwith
+necessarysafeguardstoallowforcontrolleduseofthemodel,forexamplebyrequiring
+thatusersadheretousageguidelinesorrestrictionstoaccessthemodelorimplementing
+safetyfilters.
+• DatasetsthathavebeenscrapedfromtheInternetcouldposesafetyrisks. Theauthors
+shoulddescribehowtheyavoidedreleasingunsafeimages.
+• Werecognizethatprovidingeffectivesafeguardsischallenging,andmanypapersdo
+notrequirethis,butweencourageauthorstotakethisintoaccountandmakeabest
+faitheffort.
+12. Licensesforexistingassets
+Question: Arethecreatorsororiginalownersofassets(e.g.,code,data,models),usedin
+thepaper,properlycreditedandarethelicenseandtermsofuseexplicitlymentionedand
+properlyrespected?
+Answer: [Yes]
+Justification: WeusethelatestversionsofbothPyTorchandSciKit-Learn,andcitebothin
+thesupplemental.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotuseexistingassets.
+• Theauthorsshouldcitetheoriginalpaperthatproducedthecodepackageordataset.
+• Theauthorsshouldstatewhichversionoftheassetisusedand,ifpossible,includea
+URL.
+• Thenameofthelicense(e.g.,CC-BY4.0)shouldbeincludedforeachasset.
+• Forscrapeddatafromaparticularsource(e.g.,website),thecopyrightandtermsof
+serviceofthatsourceshouldbeprovided.
+30
+• If assets are released, the license, copyright information, and terms of use in the
+packageshouldbeprovided. Forpopulardatasets,paperswithcode.com/datasets
+hascuratedlicensesforsomedatasets. Theirlicensingguidecanhelpdeterminethe
+licenseofadataset.
+• Forexistingdatasetsthatarere-packaged,boththeoriginallicenseandthelicenseof
+thederivedasset(ifithaschanged)shouldbeprovided.
+• Ifthisinformationisnotavailableonline,theauthorsareencouragedtoreachoutto
+theasset’screators.
+13. NewAssets
+Question:Arenewassetsintroducedinthepaperwelldocumentedandisthedocumentation
+providedalongsidetheassets?
+Answer: [NA]
+Justification: Nosuchassetsareintroduced.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotreleasenewassets.
+• Researchersshouldcommunicatethedetailsofthedataset/code/modelaspartoftheir
+submissions via structured templates. This includes details about training, license,
+limitations,etc.
+• Thepapershoulddiscusswhetherandhowconsentwasobtainedfrompeoplewhose
+assetisused.
+• Atsubmissiontime,remembertoanonymizeyourassets(ifapplicable). Youcaneither
+createananonymizedURLorincludeananonymizedzipfile.
+14. CrowdsourcingandResearchwithHumanSubjects
+Question: Forcrowdsourcingexperimentsandresearchwithhumansubjects,doesthepaper
+includethefulltextofinstructionsgiventoparticipantsandscreenshots,ifapplicable,as
+wellasdetailsaboutcompensation(ifany)?
+Answer: [NA]
+Justification: Nosuchmodelsordatasetsareinvolved.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotinvolvecrowdsourcingnorresearchwith
+humansubjects.
+• Includingthisinformationinthesupplementalmaterialisfine,butifthemaincontribu-
+tionofthepaperinvolveshumansubjects,thenasmuchdetailaspossibleshouldbe
+includedinthemainpaper.
+• AccordingtotheNeurIPSCodeofEthics,workersinvolvedindatacollection,curation,
+orotherlaborshouldbepaidatleasttheminimumwageinthecountryofthedata
+collector.
+15. InstitutionalReviewBoard(IRB)ApprovalsorEquivalentforResearchwithHuman
+Subjects
+Question: Doesthepaperdescribepotentialrisksincurredbystudyparticipants,whether
+suchrisksweredisclosedtothesubjects,andwhetherInstitutionalReviewBoard(IRB)
+approvals(oranequivalentapproval/reviewbasedontherequirementsofyourcountryor
+institution)wereobtained?
+Answer: [NA]
+Justification: Wehavenohumanparticipantsinourstudy.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotinvolvecrowdsourcingnorresearchwith
+humansubjects.
+• Dependingonthecountryinwhichresearchisconducted,IRBapproval(orequivalent)
+mayberequiredforanyhumansubjectsresearch. IfyouobtainedIRBapproval,you
+shouldclearlystatethisinthepaper.
+31
+• Werecognizethattheproceduresforthismayvarysignificantlybetweeninstitutions
+andlocations,andweexpectauthorstoadheretotheNeurIPSCodeofEthicsandthe
+guidelinesfortheirinstitution.
+• Forinitialsubmissions,donotincludeanyinformationthatwouldbreakanonymity(if
+applicable),suchastheinstitutionconductingthereview.
+32

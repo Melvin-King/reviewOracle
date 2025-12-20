@@ -5,9 +5,18 @@ Step 2: Fact Verification Agent (事实验证层)
 
 import json
 import re
+import sys
+import io
 from typing import List, Dict, Optional
 from ..utils.llm_client import LLMClient
 from ..utils.rag import SimpleRAG
+
+# 设置UTF-8编码输出（Windows兼容）
+if sys.platform == 'win32' and hasattr(sys.stdout, 'buffer'):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except:
+        pass
 
 
 class VerificationAgent:
@@ -136,7 +145,9 @@ You must base your judgment solely on the evidence provided from the paper. Be o
             available_sections = list(paper_sections.keys())
             target_section = self.identify_relevant_section(claim, available_sections)
             if target_section:
-                print(f"    [Section Filter] Claim {claim_id} -> Section: {target_section}")
+                # 截断section名称以避免编码问题
+                section_display = target_section[:50] if len(target_section) > 50 else target_section
+                print(f"    [Section Filter] Claim {claim_id} -> Section: {section_display}")
         
         # 使用 RAG 检索相关段落（支持section过滤）
         # 检查 RAG 类型以使用正确的接口

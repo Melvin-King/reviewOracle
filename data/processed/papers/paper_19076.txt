@@ -1,0 +1,1342 @@
+Visual Autoregressive Modeling: Scalable Image
+Generation via Next-Scale Prediction
+KeyuTian1,2, YiJiang2,†, ZehuanYuan2,∗, BingyuePeng2, LiweiWang1,3,∗
+1CenterforDataScience,PekingUniversity 2BytedanceInc.
+3StateKeyLabofGeneralArtificialIntelligence,Schoolof
+IntelligenceScienceandTechnology,PekingUniversity
+keyutian@stu.pku.edu.cn, jiangyi.enjoy@bytedance.com,
+yuanzehuan@bytedance.com, bingyue.peng@bytedance.com, wanglw@pku.edu.cn
+Tryandexploreouronlinedemoat: https://var.vision
+Codesandmodels: https://github.com/FoundationVision/VAR
+Figure1: GeneratedsamplesfromVisualAutoRegressive(VAR)transformerstrainedonImageNet.We
+show512×512samples(top),256×256samples(middle),andzero-shotimageeditingresults(bottom).
+Abstract
+WepresentVisualAutoRegressivemodeling(VAR),anewgenerationparadigm
+thatredefinestheautoregressivelearningonimagesascoarse-to-fine“next-scale
+prediction”or“next-resolutionprediction”,divergingfromthestandardraster-scan
+“next-tokenprediction”. Thissimple,intuitivemethodologyallowsautoregressive
+(AR)transformerstolearnvisualdistributionsfastandcangeneralizewell: VAR,
+forthefirsttime,makesGPT-styleARmodelssurpassdiffusiontransformersin
+imagegeneration. OnImageNet256×256benchmark,VARsignificantlyimprove
+ARbaselinebyimprovingFréchetinceptiondistance(FID)from18.65to1.73,
+inception score (IS) from 80.4 to 350.2, with 20× faster inference speed. It is
+alsoempiricallyverifiedthatVARoutperformstheDiffusionTransformer(DiT)in
+multipledimensionsincludingimagequality,inferencespeed,dataefficiency,and
+scalability.ScalingupVARmodelsexhibitsclearpower-lawscalinglawssimilarto
+thoseobservedinLLMs,withlinearcorrelationcoefficientsnear−0.998assolid
+evidence. VARfurthershowcaseszero-shotgeneralizationabilityindownstream
+tasksincludingimagein-painting,out-painting,andediting. Theseresultssuggest
+VARhasinitiallyemulatedthetwoimportantpropertiesofLLMs: ScalingLaws
+andzero-shotgeneralization. Wehavereleasedallmodelsandcodestopromote
+theexplorationofAR/VARmodelsforvisualgenerationandunifiedlearning.
+∗correspondingauthors: wanglw@pku.edu.cn,yuanzehuan@bytedance.com;†:projectlead
+38thConferenceonNeuralInformationProcessingSystems(NeurIPS2024).
+Figure2: Standardautoregressivemodeling(AR)vs.ourproposedvisualautoregressivemodeling(VAR).
+(a)ARappliedtolanguage:sequentialtexttokengenerationfromlefttoright,wordbyword;(b)ARapplied
+toimages:sequentialvisualtokengenerationinaraster-scanorder,fromlefttoright,toptobottom;(c)VAR
+forimages:multi-scaletokenmapsareautoregressivelygeneratedfromcoarsetofinescales(lowertohigher
+resolutions),withparalleltokengenerationwithineachscale.VARrequiresamulti-scaleVQVAEtowork.
+1 Introduction
+TheadventofGPTseries[66,67,15,63,1]andmoreautoregressive(AR)largelanguagemodels
+(LLMs)[22,4,39,83,84,91,79,5,80]hasheraldedanewepochinthefieldofartificialintelligence.
+These models exhibit promising intelligence in generality and versatility that, despite issues like
+hallucinations[40],arestillconsideredtotakeasolidsteptowardthegeneralartificialintelligence
+(AGI).Atthecoreofthesemodelsisaself-supervisedlearningstrategy–predictingthenexttokenin
+asequence,asimpleyetprofoundapproach. StudiesintothesuccessoftheselargeARmodelshave
+highlightedtheirscalabilityandgeneralizabilty:theformer,asexemplifiedbyscalinglaws[44,36],
+allowsustopredictlargemodel’sperformancefromsmalleronesandthusguidesbetterresource
+allocation,whilethelatter,asevidencedbyzero-shotandfew-shotlearning[67,15],underscores
+theunsupervised-trainedmodels’adaptabilitytodiverse,unseentasks. ThesepropertiesrevealAR
+models’potentialinlearningfromvastunlabeleddata,encapsulatingtheessenceof“AGI”.
+Inparallel,thefieldofcomputervisionhasbeenstrivingtodeveloplargeautoregressiveorworld
+models[59,58,6],aimingtoemulatetheirimpressivescalabilityandgeneralizability. Trailblazing
+effortslikeVQGANandDALL-E[30,68]alongwiththeirsuccessors[69,92,51,99]haveshowcased
+thepotentialofARmodelsinimagegeneration. Thesemodelsutilizeavisualtokenizertodiscretize
+continuousimagesintogridsof2Dtokens,whicharethenflattenedtoa1DsequenceforARlearning
+(Fig.2b),mirroringtheprocessofsequentiallanguagemodeling(Fig.2a). However,thescalinglaws
+ofthesemodelsremainunderexplored,andmorefrustratingly,theirperformancesignificantlylags
+behinddiffusionmodels[64,3,52],asshowninFig.3. Incontrasttotheremarkableachievements
+ofLLMs,thepowerofautoregressivemodelsincomputervisionappearstobesomewhatlocked.
+Autoregressive modeling requires defining the
+orderofdata. Ourworkreconsidershowto“or-
+der” an image: Humans typically perceive or 0.3B 1B 2B 5B
+createimagesinahierachicalmanner,firstcap- ADM
+turingtheglobalstructureandthenlocaldetails. AR(RQ) re
+Thismulti-scale,coarse-to-finenaturesuggests
+MaskGIT AR(vqgan)
+tte
+b
+w
+an
+id
+“
+e
+o
+sp
+rd
+re
+e
+a
+r”
+dm
+fo
+u
+r
+lt
+i
+i
+m
+-s
+a
+c
+g
+a
+e
+le
+s.
+de
+A
+si
+l
+g
+s
+n
+o
+s
+i
+[
+n
+5
+s
+5
+p
+,
+i
+5
+re
+3
+d
+,8
+b
+2
+y
+,4
+t
+5
+h
+]
+e
+,
+Gigagan
+si
+re
+w
+wedefineautoregressivelearningforimagesas RCG o l
+DiT
+“next-scale prediction” in Fig. 2 (c), diverging
+VAR (ours)
+fromtheconventional“next-tokenprediction”in
+Fig. 2 (b). Our approach begins by encoding
+an image into multi-scale token maps. The au-
+toregressiveprocessisthenstartedfromthe1×1
+tokenmap,andprogressivelyexpandsinresolu- Figure3: Scalingbehaviorofdifferentmodelfami-
+tion: at each step, the transformer predicts the liesonImageNet256×256generationbenchmark.The
+nexthigher-resolutiontokenmapconditionedon FIDofthevalidationsetservesasareferencelower
+allpreviousones. Werefertothismethodology bound(1.78).VARwith2BparametersreachesanFID
+asVisualAutoRegressive(VAR)modeling. of1.73,surpassingL-DiTwith3Bor7Bparameters.
+2
+VARdirectlyleveragesGPT-2-liketransformerarchitecture[67]forvisualautoregressivelearning.
+OntheImageNet256×256benchmark,VARsignificantlyimprovesitsARbaseline,achievinga
+Fréchetinceptiondistance(FID)of1.73andaninceptionscore(IS)of350.2,withinferencespeed
+20×faster(seeSec.6fordetails). Notably,VARsurpassestheDiffusionTransformer(DiT)–the
+foundationofleadingdiffusionsystemslikeStableDiffusion3.0andSORA[29,14]–inFID/IS,
+dataefficiency,inferencespeed,andscalability. VARmodelsalsoexhibitscalinglawsakintothose
+witnessedinLLMs. Lastly,weshowcaseVAR’szero-shotgeneralizationcapabilitiesintaskslike
+imagein-painting,out-painting,andediting. Insummary,ourcontributionstothecommunityinclude:
+1. Anewvisualgenerativeframeworkusingamulti-scaleautoregressiveparadigmwithnext-scale
+prediction,offeringnewinsightsinautoregressivealgorithmdesignforcomputervision.
+2. AnempiricalvalidationofVARmodels’ScalingLawsandzero-shotgeneralizationpotential,
+whichinitiallyemulatestheappealingpropertiesoflargelanguagemodels(LLMs).
+3. Abreakthroughinvisualautoregressivemodelperformance,makingGPT-styleautoregressive
+methodssurpassstrongdiffusionmodelsinimagesynthesisforthefirsttime2.
+4. Acomprehensiveopen-sourcecodesuite,includingbothVQtokenizerandautoregressivemodel
+trainingpipelines,tohelppropeltheadvancementofvisualautoregressivelearning.
+2 RelatedWork
+2.1 Propertiesoflargeautoregressivelanguagemodels
+Scalinglaws arefoundandstudiedinautoregressivelanguagemodels[44,36],whichdescribea
+power-law relationship between the scale of model (or dataset, computation, etc.) and the cross-
+entropy loss value on thetest set. Scaling laws allow us to directly predict the performanceof a
+largermodelfromsmallerones[1],thusguidingbetterresourceallocation. Morepleasingly,they
+showthattheperformanceofLLMscanscalewellwiththegrowthofmodel,data,andcomputation
+andneversaturate,whichisconsideredakeyfactorinthesuccessof [15,83,84,98,91,39]. The
+successbroughtbyscalinglawshasinspiredthevisioncommunitytoexploremoresimilarmethods
+formultimodalityunderstandingandgeneration[54,2,89,27,96,78,21,23,42,32,33,81,88].
+Zero-shotgeneralization. Zero-shotgeneralization[73]referstotheabilityofamodel,particularly
+aLargeLanguageModel,toperformtasksthatithasnotbeenexplicitlytrainedon. Withintherealm
+ofthecomputervision,thereisaburgeoninginterestinthezero-shotandin-contextlearningabilities
+offoundationmodels,CLIP[65],SAM[49],Dinov2[62]. InnovationslikePainter[90]andLVM[6]
+extendvisualprompters[41,11]toachievein-contextlearninginvision.
+2.2 Visualgeneration
+Raster-scanautoregressivemodels forvisualgenerationnecessitatetheencodingof2Dimages
+into 1D token sequences. Early endeavors [20, 85] have shown the ability to generate RGB (or
+grouped)pixelsinthestandardrow-by-row,raster-scanmanner. [70]extends[85]byusingmultiple
+independenttrainablenetworkstodosuper-resolutionrepeatedly. VQGAN[30]advances[20,85]by
+doingautoregressivelearninginthelatentspaceofVQVAE[86]. ItemploysGPT-2decoder-only
+transformertogeneratetokensintheraster-scanorder,likehowViT[28]serializes2Dimagesinto
+1Dpatches. VQVAE-2[69]andRQ-Transformer[51]alsofollowthisraster-scanmannerbutuse
+extrascalesorstackedcodes. Parti[93],basedonthearchitectureofViT-VQGAN[92],scalesthe
+transformerto20Bparametersandworkswellintext-to-imagesynthesis.
+Masked-predictionmodel. MaskGIT[17]employsaVQautoencoderandamaskedpredictiontrans-
+formersimilartoBERT[25,10,35]togenerateVQtokensthroughagreedyalgorithm. MagViT[94]
+adaptsthisapproachtovideos,andMagViT-2[95]enhances[17,94]byintroducinganimproved
+VQVAEforbothimagesandvideos. MUSE[16]furtherscalesMaskGITto3Bparameters.
+Diffusionmodels’progresshascenteredaroundimprovedlearningorsampling[77,76,56,57,7],
+guidance[38,61],latentlearning[71],andarchitectures[37,64,72,31]. DiTandU-ViT[64,8]
+replacesorintegratestheU-Netwithtransformer,andinspiresrecentimage[19,18]orvideosynthesis
+systems[12,34]includingStableDiffusion3.0[29],SORA[14],andVidu[9].
+2Arelatedwork[95]named“languagemodelbeatsdiffusion”belongstoBERT-stylemasked-predictionmodel.
+3
+3 Method
+3.1 Preliminary: autoregressivemodelingvianext-tokenprediction
+Formulation. Consider a sequence of discrete tokens x = (x ,x ,...,x ), where x ∈ [V] is
+1 2 T t
+an integer from a vocabulary of size V. The next-token autoregressive posits the probability of
+observingthecurrenttokenx dependsonlyonitsprefix(x ,x ,...,x ). Thisunidirectional
+t 1 2 t−1
+tokendependencyassumptionallowsforthefactorizationofthesequencex’slikelihood:
+T
+(cid:89)
+p(x ,x ,...,x )= p(x |x ,x ,...,x ). (1)
+1 2 T t 1 2 t−1
+t=1
+Traininganautoregressivemodelp involvesoptimizingp (x | x ,x ,...,x )overadataset.
+θ θ t 1 2 t−1
+Thisisknownasthe“next-tokenprediction”,andthetrainedp cangeneratenewsequences.
+θ
+Tokenization. Imagesareinherently2Dcontinuoussignals. Toapplyautoregressivemodelingto
+imagesvianext-tokenprediction,wemust: 1)tokenizeanimageintoseveraldiscretetokens,and
+2)definea1Dorderoftokensforunidirectionalmodeling. For1),aquantizedautoencodersuch
+as[30]isoftenusedtoconverttheimagefeaturemapf ∈Rh×w×C todiscretetokensq ∈[V]h×w:
+f =E(im), q =Q(f), (2)
+where im denotes the raw image, E(·) a encoder, and Q(·) a quantizer. The quantizer typically
+includesalearnablecodebookZ ∈RV×C containingV vectors. Thequantizationprocessq =Q(f)
+willmapeachfeaturevectorf(i,j)tothecodeindexq(i,j)ofitsnearestcodeintheEuclideansense:
+(cid:32) (cid:33)
+q(i,j) = argmin∥lookup(Z,v)−f(i,j)∥ ∈[V], (3)
+2
+v∈[V]
+wherelookup(Z,v)meanstakingthev-thvectorincodebookZ. Totrainthequantizedautoencoder,
+Z islookedupbyeveryq(i,j) togetfˆ,theapproximationoforiginalf. Thenanewimageimˆ is
+reconstructedusingthedecoderD(·)givenfˆ,andacompoundlossLisminimized:
+fˆ=lookup(Z,q), imˆ =D(fˆ), (4)
+L=∥im−imˆ ∥ +∥f −fˆ∥ +λ L (imˆ )+λ L (imˆ ), (5)
+2 2 P P G G
+whereL (·)isaperceptuallosssuchasLPIPS[97],L (·)adiscriminativelosslikeStyleGAN’s
+P G
+discriminatorloss[47],andλ ,λ arelossweights. Oncetheautoencoder{E,Q,D}isfullytrained,
+P G
+itwillbeusedtotokenizeimagesforsubsequenttrainingofaunidirectionalautoregressivemodel.
+Theimagetokensinq ∈[V]h×warearrangedina2Dgrid.Unlikenaturallanguagesentenceswithan
+inherentleft-to-rightordering,theorderofimagetokensmustbeexplicitlydefinedforunidirectional
+autoregressivelearning. PreviousARmethods[30,92,51]flattenthe2Dgridofqintoa1Dsequence
+x = (x ,...,x ) using some strategy such as row-major raster scan, spiral, or z-curve order.
+1 h×w
+Onceflattened,theycanextractasetofsequencesxfromthedataset,andthentrainanautoregressive
+modeltomaximizethelikelihoodin(1)vianext-tokenprediction.
+Discussionontheweaknessofvanillaautoregressivemodels. Theaboveapproachoftokenizing
+andflatteningenablenext-tokenautoregressivelearningonimages,butintroducesseveralissues:
+1) Mathematicalpremiseviolation. Inquantizedautoencoders(VQVAEs),theencodertypically
+produces an image feature map f with inter-dependent feature vectors f(i,j) for all i,j. So
+afterquantizationandflattening,thetokensequence(x ,x ,...,x )retainsbidirectional
+1 2 h×w
+correlations. This contradicts the unidirectional dependency assumption of autoregressive
+models,whichdictatesthateachtokenx shouldonlydependonitsprefix(x ,x ,...,x ).
+t 1 2 t−1
+2) Inabilitytoperformsomezero-shotgeneralization. Similartoissue1),Theunidirectional
+natureofimageautoregressivemodelingrestrictstheirgeneralizabilityintasksrequiringbidi-
+rectionalreasoning. E.g.,itcannotpredictthetoppartofanimagegiventhebottompart.
+3) Structuraldegradation. Theflatteningdisruptsthespatiallocalityinherentinimagefeature
+maps. Forexample,thetokenq(i,j)andits4immediateneighborsq(i±1,j),q(i,j±1)areclosely
+correlatedduetotheirproximity. Thisspatialrelationshipiscompromisedinthelinearsequence
+x,whereunidirectionalconstraintsdiminishthesecorrelations.
+4
+4) Inefficiency. Generatinganimagetokensequencex=(x ,x ,...,x )withaconventional
+1 2 n×n
+self-attentiontransformerincursO(n2)autoregressivestepsandO(n6)computationalcost.
+Issues2)and3)areevident(seeexamplesabove). Regardingissue1),wepresentempiricalevidence
+in Appendix C. The proof of issue 3) is detailed in Appendix D. These theoretical and practical
+limitationscallforarethinkingofautoregressivemodelsinthecontextofimagegeneration.
+Stage 1: Training multi-scale VQVAE on images Stage 2: Training VAR transformer on tokens
+( to provide the ground truth for training Stage 2) ([S] means a start token with condition information)
+Block-wise causal mask
+VAR Transformer (causal) 1
+4
+9
+word embedding and up-interpolation
+VAE encoding Multi-scale quantization & EmbeddingDecoding 𝐿=12+22+32=14
+Figure4: VARinvolvestwoseparatedtrainingstages. Stage1: amulti-scaleVQautoencoderencodes
+animageintoK tokenmapsR = (r ,r ,...,r )andistrainedbyacompoundloss(5). Fordetailson
+1 2 K
+“Multi-scalequantization”and“Embedding”,checkAlgorithm1and2. Stage2:aVARtransformeristrained
+via next-scaleprediction (6): it takes ([s],r ,r ,...,r ) as inputto predict (r ,r ,r ,...,r ). The
+1 2 K−1 1 2 3 K
+attentionmaskisusedintrainingtoensureeachr canonlyattendtor .Standardcross-entropylossisused.
+k ≤k
+3.2 Visualautoregressivemodelingvianext-scaleprediction
+Reformulation. Wereconceptualizetheautoregressivemodelingonimagesbyshiftingfrom“next-
+tokenprediction”to“next-scaleprediction”strategy. Here,theautoregressiveunitisanentiretoken
+map,ratherthanasingletoken.Westartbyquantizingafeaturemapf ∈Rh×w×C intoKmulti-scale
+tokenmaps(r ,r ,...,r ),eachataincreasinglyhigherresolutionh ×w ,culminatinginr
+1 2 K k k K
+matchestheoriginalfeaturemap’sresolutionh×w. Theautoregressivelikelihoodisformulatedas:
+K
+(cid:89)
+p(r ,r ,...,r )= p(r |r ,r ,...,r ), (6)
+1 2 K k 1 2 k−1
+k=1
+whereeachautoregressiveunitr
+k
+∈[V]hk×wk isthetokenmapatscalekcontainingh
+k
+×w
+k
+tokens,
+andthesequence(r ,r ,...,r )servesasthethe“prefix”forr . Duringthek-thautoregressive
+1 2 k−1 k
+step,alldistributionsovertheh ×w tokensinr willbegeneratedinparallel,conditionedonr ’s
+k k k k
+prefixandassociatedk-thpositionembeddingmap. This“next-scaleprediction”methodologyis
+whatwedefineasvisualautoregressivemodeling(VAR),depictedontherightsideofFig.4. Note
+thatinthetrainingofVAR,ablock-wisecausalattentionmaskisusedtoensurethateachr can
+k
+onlyattendtoitsprefixr . Duringinference,kv-cachingcanbeusedandnomaskisneeded.
+≤k
+Discussion. VARaddressesthepreviouslymentionedthreeissuesasfollows:
+1) Themathematicalpremiseissatisfiedifweconstraineachr todependonlyonitsprefix,thatis,
+k
+theprocessofgettingr issolelyrelatedtor . Thisconstraintisacceptableasitalignswith
+k ≤k
+thenatural,coarse-to-fineprogressioncharacteristicslikehumanvisualperceptionandartistic
+drawing(aswediscussedinSec.1). FurtherdetailsareprovidedintheTokenizationbelow.
+2) Thespatiallocalityispreservedas(i)thereisnoflatteningoperationinVAR,and(ii)tokensin
+eachr arefullycorrelated. Themulti-scaledesignadditionallyreinforcesthespatialstructure.
+k
+3) Thecomplexityforgeneratinganimagewithn×nlatentissignificantlyreducedtoO(n4),see
+Appendixforproof. Thisefficiencygainarisesfromtheparalleltokengenerationineachr .
+k
+Tokenization. Wedevelopeanewmulti-scalequantizationautoencodertoencodeanimagetoK
+multi-scalediscretetokenmapsR=(r ,r ,...,r )necessaryforVARlearning(6). Weemploy
+1 2 K
+the same architecture as VQGAN [30] but with a modified multi-scale quantization layer. The
+encodinganddecodingprocedureswithresidualdesignonf orfˆaredetailedinalgorithms1and
+2. Weempiricallyfindthisresidual-styledesign,akinto[51],canperformbetterthanindependent
+interpolation. Algorithm1showsthateachr woulddependonlyonitsprefix(r ,r ,...,r ).
+k 1 2 k−1
+5
+NotethatasharedcodebookZ isutilizedacrossallscales,ensuringthateachr ’stokensbelongto
+k
+thesamevocabulary[V]. Toaddresstheinformationlossinupscalingz toh ×w ,weuseK
+k K K
+extraconvolutionlayers{ϕ }K . Noconvolutionisusedafterdownsamplingf toh ×w .
+k k=1 k k
+Algorithm1: Multi-scaleVQVAEEncoding Algorithm2:Multi-scaleVQVAEReconstruction
+1 Inputs: rawimageim; 1 Inputs: multi-scaletokenmapsR;
+2 Hyperparameters: stepsK,resolutions 2 Hyperparameters: stepsK,resolutions
+3 f (h = k, E w (i k m )K k ) = , 1 R ; =[]; 3 fˆ (h = k, 0 w ; k)K k=1 ;
+4 fork=1,···,Kdo 4 fork=1,···,Kdo
+5 rk=Q(interpolate(f,hk,wk)); 5 rk=queue_pop(R);
+6 R=queue_push(R,rk); 6 zk=lookup(Z,rk);
+7 8 z z k k = = l i o n o te k r u p p o ( la Z te , ( r z k k ) , ; hK,wK); 7 8 f z ˆ k = = fˆ in + te ϕ rp k o ( l z a k te ) ( ; zk,hK,wK);
+9 f =f−ϕk(zk); 9 imˆ =D(fˆ);
+10 Return: multi-scaletokensR; 10 Return: reconstructedimageimˆ;
+4 Implementationdetails
+VAR tokenizer. As aforementioned, we use the vanilla VQVAE architecture [30] and a multi-
+scalequantizationschemewithK extraconvolutions(0.03Mextraparameters). Weuseashared
+codebookforallscaleswithV =4096. Followingthebaseline[30],ourtokenizerisalsotrainedon
+OpenImages[50]withthecompoundloss(5)andaspatialdownsampleratioof16×.
+VARtransformer. OurmainfocusisonVARalgorithmsowekeepasimplemodelarchitecture
+design. Weadoptthearchitectureofstandarddecoder-onlytransformersakintoGPT-2andVQ-
+GAN[67,30]withadaptivenormalization(AdaLN),whichhaswidespreadadoptionandproven
+effectivenessinmanyvisualgenerativemodels[47,48,46,75,74,43,64,19]. Forclass-conditional
+synthesis,weusetheclassembeddingasthestarttoken[s]andalsotheconditionofAdaLN.We
+foundnormalizingqueriesandkeystounitvectorsbeforeattentioncanstablizethetraining. Wedo
+notuseadvancedtechniquesinlargelanguagemodels,suchasrotarypositionembedding(RoPE),
+SwiGLUMLP,orRMSNorm[83,84]. Ourmodelshapefollowsasimplerulelike[44]thatthe
+widthw,headcountsh,anddropratedrarelinearlyscaledwiththedepthdasfollows:
+w =64d, h=d, dr =0.1·d/24. (7)
+Consequently,themainparametercountN ofaVARtransformerwithdepthdisgivenby3:
+N(d)= d·4w2 + d·8w2 + d·6w2 =18dw2 =73728d3. (8)
+(cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125) (cid:124) (cid:123)(cid:122) (cid:125)
+self-attention feed-forward adaptivelayernorm
+Allmodelsaretrainedwiththesimilarsettings: abaselearningrateof10−4per256batchsize,an
+AdamW optimizer with β = 0.9, β = 0.95, decay = 0.05, a batch size from 768 to 1024 and
+1 2
+trainingepochsfrom200to350(dependsonmodelsize). TheevaluationsinSec.5suggestthatsuch
+asimplemodeldesignarecapableofscalingandgeneralizingwell.
+5 EmpiricalResults
+ThissectionfirstcomparesVARwithotherimagegenerativemodelfamiliesinSec.5.1. Evaluations
+onthescalabilityandgeneralizabilityofVARmodelsarepresentedinSec.5.2andAppendixB.For
+implementationdetailsandablationstudy,pleaseseeAppendix4andAppendix6.
+5.1 State-of-the-artimagegeneration
+Setup. WetestVARmodelswithdepths16,20,24,and30onImageNet256×256and512×512
+conditionalgenerationbenchmarksandcomparethemwiththestate-of-the-artimagegeneration
+modelfamilies. AmongallVQVAE-basedARorVARmodels,VQGAN[30]andoursusethesame
+architecture(CNN)andtrainingdata(OpenImages[50])forVQVAE,whileViT-VQGAN[92]uses
+aViTautoencoder,andbothitandRQTransformer[51]trainstheVQVAEdirectlyonImageNet.
+TheresultsaresummariedinTab.1andTab.2.
+3Duetoresourcelimitation,weuseasinglesharedadaptivelayernorm(AdaLN)acorssallattentionblocks
+in512×512synthesis.Inthiscase,theparametercountwouldbereducedtoaround12dw2+6w2 ≈49152d3.
+6
+Table1: Generativemodelfamilycomparisononclass-conditionalImageNet256×256.“↓”or“↑”indicate
+lowerorhighervaluesarebetter.MetricsincludeFréchetinceptiondistance(FID),inceptionscore(IS),precision
+(Pre)andrecall(rec).“#Step”:thenumberofmodelrunsneededtogenerateanimage.Wall-clockinferencetime
+relativetoVARisreported.Modelswiththesuffix“-re”usedrejectionsampling.†:takenfromMaskGIT[17].
+Type Model FID↓ IS↑ Pre↑ Rec↑ #Para #Step Time
+GAN BigGAN[13] 6.95 224.5 0.89 0.38 112M 1 −
+GAN GigaGAN[43] 3.45 225.5 0.84 0.61 569M 1 −
+GAN StyleGan-XL[75] 2.30 265.1 0.78 0.53 166M 1 0.3[75]
+Diff. ADM[26] 10.94 101.0 0.69 0.63 554M 250 168[75]
+Diff. CDM[37] 4.88 158.7 − − − 8100 −
+Diff. LDM-4-G[71] 3.60 247.7 − − 400M 250 −
+Diff. DiT-L/2[64] 5.02 167.2 0.75 0.57 458M 250 31
+Diff. DiT-XL/2[64] 2.27 278.2 0.83 0.57 675M 250 45
+Diff. L-DiT-3B[3] 2.10 304.4 0.82 0.60 3.0B 250 >45
+Diff. L-DiT-7B[3] 2.28 316.2 0.83 0.58 7.0B 250 >45
+Mask. MaskGIT[17] 6.18 182.1 0.80 0.51 227M 8 0.5[17]
+Mask. RCG(cond.)[52] 3.49 215.5 − − 502M 20 1.9[52]
+AR VQVAE-2†[69] 31.11 ∼45 0.36 0.57 13.5B 5120 −
+AR VQGAN†[30] 18.65 80.4 0.78 0.26 227M 256 19[17]
+AR VQGAN[30] 15.78 74.3 − − 1.4B 256 24
+AR VQGAN-re[30] 5.20 280.3 − − 1.4B 256 24
+AR ViTVQ[92] 4.17 175.1 − − 1.7B 1024 >24
+AR ViTVQ-re[92] 3.04 227.4 − − 1.7B 1024 >24
+AR RQTran.[51] 7.55 134.0 − − 3.8B 68 21
+VAR VAR-d16 3.30 274.4 0.84 0.51 310M 10 0.4
+VAR VAR-d20 2.57 302.6 0.83 0.56 600M 10 0.5
+VAR VAR-d24 2.09 312.9 0.82 0.59 1.0B 10 0.6
+VAR VAR-d30 1.92 323.1 0.82 0.59 2.0B 10 1
+VAR VAR-d30-re 1.73 350.2 0.82 0.60 2.0B 10 1
+(validationdata) 1.78 236.9 0.75 0.67
+Overall comparison. In comparison with existing generative approaches including generative
+adversarialnetworks(GAN),diffusionmodels(Diff.),BERT-stylemasked-predictionmodels(Mask.),
+andGPT-styleautoregressivemodels(AR),ourvisualautoregressive(VAR)establishesanewmodel
+class. AsshowninTab.1,VARnotonlyachievesthebestFID/ISbutalsodemonstratesremarkable
+speedinimagegeneration. VARalsomaintainsdecentprecisionandrecall,confirmingitssemantic
+consistency. Theseadvantagesholdtrueonthe512×512synthesisbenchmark,asdetailedinTab.2.
+Notably,VARsignificantlyadvancestraditionalARcapabilities. Toourknowledge,thisisthefirst
+timeofautoregressivemodelsoutperformingDiffusiontransformers,amilestonemadepossibleby
+VAR’sresolutionofARlimitationsdiscussedinSection3.
+Efficiency comparison. Conventional autore-
+gressive (AR) models [30, 69, 92, 51] suffer a Table2: ImageNet512×512conditionalgeneration.
+†: quotedfromMaskGIT[17]. “-s”: asingleshared
+lotfromthehighcomputationalcost,asthenum-
+AdaLNlayerisusedduetoresourcelimitation.
+ber of image tokens is quadratic to the image
+resolution. A full autoregressive generation of
+Type Model FID↓ IS↑ Time
+n2 tokens requires O(n2) decoding iterations
+andO(n6)totalcomputations. Incontrast,VAR GAN BigGAN[13] 8.43 177.9 −
+onlyrequiresO(log(n))iterationsandO(n4)to-
+Diff. ADM[26] 23.24 101.0 −
+talcomputations. Thewall-clocktimereported Diff. DiT-XL/2[64] 3.04 240.8 81
+in Tab. 1 also provides empirical evidence that
+Mask. MaskGIT[17] 7.32 156.0 0.5†
+VAR is around 20 times faster than VQGAN
+andViT-VQGANevenwithmoremodelparame- AR VQGAN[30] 26.52 66.8 25†
+ters,reachingthespeedofefficientGANmodels VAR VAR-d36-s 2.63 303.2 1
+whichonlyrequire1steptogenerateanimage.
+Comparedwithpopulardiffusiontransformer. TheVARmodelsurpassestherecentlypopular
+diffusionmodelsDiffusionTransformer(DiT),whichservesastheprecursortothelatestStable-
+Diffusion3[29]andSORA[14],inmultipledimensions:1)Inimagegenerationdiversityandquality
+7
+(FIDandIS),VARwith2BparametersconsistentlyperformsbetterthanDiT-XL/2[64],L-DiT-3B,
+andL-DiT-7B[3]. VARalsomaintainscomparableprecisionandrecall. 2)Forinferencespeed,
+the DiT-XL/2 requires 45× the wall-clock time compared to VAR, while 3B and 7B models [3]
+wouldcostmuchmore. 3)VARisconsideredmoredata-efficient,asitrequiresonly350training
+epochscomparedtoDiT-XL/2’s1400. 4)Forscalability,Fig.3andTab.1showthatDiTonlyobtains
+marginalorevennegativegainsbeyond675Mparameters. Incontrast,theFIDandISofVARare
+consistentlyimproved,aligningwiththescalinglawstudyinSec.5.2. TheseresultsestablishVARas
+potentiallyamoreefficientandscalablemodelforimagegenerationthanmodelslikeDiT.
+    
+    
+    
+    
+    
+       
+ 0 R G H O  3 D U D P H W H U V   % L O O L R Q 
+  H O D F V  W V D O   V V R O  W V H 7
+  D 
+L=(2.0 N)0.23     
+ & R U U H O D  =       
+    
+    
+    
+    
+       
+ 0 R G H O  3 D U D P H W H U V   % L O O L R Q 
+  H O D F V  O O D   V V R O  W V H 7
+  E 
+L=(2.5 N)0.20     
+ & R U U H O D  =       
+    
+    
+    
+    
+       
+ 0 R G H O  3 D U D P H W H U V   % L O O L R Q 
+     H O D F V  W V D O   H W D U  U R U U H  Q H N R 7
+  F 
+Err=(5 102Npara 0.02     
+ & R U U H O D  =       
+    
+    
+    
+    
+       
+ 0 R G H O  3 D U D P H W H U V   % L O O L R Q 
+     H O D F V  O O D   H W D U  U R U U H  Q H N R 7
+  G 
+Err=(6 102Npara 0.01
+ & R U U H O D  =       
+Figure5: ScalinglawswithVARtransformersizeN,withpower-lawfits(dashed)andequations(inlegend).
+Small,near-zeroexponentsαsuggestasmoothdeclineinbothtestlossLandtokenerrorrateErrwhenscaling
+upVARtransformer. Axesareallonalogarithmicscale. ThePearsoncorrelationcoefficientsnear−0.998
+signifyastronglinearrelationshipbetweenlog(N)vs.log(L)orlog(N)vs.log(Err).
+5.2 Power-lawscalinglaws
+Background. Priorresearch[44,36,39,1]haveestablishedthatscalingupautoregressive(AR)large
+languagemodels(LLMs)leadstoapredictabledecreaseintestlossL. Thistrendcorrelateswith
+parametercountsN,trainingtokensT,andoptimaltrainingcomputeC ,followingapower-law:
+min
+L=(β·X)α, (9)
+whereX canbeanyofN,T,orC . Theexponentαreflectsthesmoothnessofpower-law,andL
+min
+denotesthereduciblelossnormalizedbyirreduciblelossL [36]AlogarithmictransformationtoL
+∞
+andX willrevealalinearrelationbetweenlog(L)andlog(X):
+log(L)=αlog(X)+αlogβ. (10)
+An appealing phenomenon is that both [44] and [36] never observed deviation from these linear
+relationshipsatthehigherendofX,althoughflatteningisinevitableasthelossapproacheszero.
+Theseobservedscalinglaws[44,36,39,1]notonlyvalidatethescalabilityofLLMsbutalsoserve
+as a predictive tool for AR modeling, which facilitates the estimation of performance for larger
+AR models based on their smaller counterparts, thereby saving resource usage by large model
+performanceforecasting. GiventheseappealingpropertiesofscalinglawsbroughtbyLLMs,their
+replicationincomputervisionisthereforeofsignificantinterest.
+SetupofscalingVARmodels. Followingtheprotocolsfrom[44,36,39,1],weexaminewhether
+ourVARmodelcomplieswithsimilarscalinglaws. Wetrainedmodelsacross12differentsizes,
+from18Mto2Bparameters,ontheImageNettrainingset[24]containing1.28Mimages(or870B
+imagetokensunderourVQVAE)perepoch. Formodelsofdifferentsizes,trainingspanned200to
+350epochs,withamaximumnumberoftokensreaching305billion. Belowwefocusonthescaling
+lawswithmodelparametersN andoptimaltrainingcomputeC givensufficienttokencountT.
+min
+ScalinglawswithmodelparametersN. WefirstinvestigatethetestlosstrendastheVARmodel
+sizeincreases. ThenumberofparametersN(d)=73728d3foraVARtransformerwithdepthdis
+specifiedin(8). Wevarieddfrom6to30,yielding12modelswith18.5Mto2.0Bparameters. We
+assessedthefinaltestcross-entropylossLandtokenpredictionerrorratesErr ontheImageNet
+validationsetof50,000images[24]. WecomputedLandErr forboththelastscale(atthelast
+next-scaleautoregressivestep),aswellastheglobalaverage. ResultsareplottedinFig.5,wherewe
+8
+    
+    
+    
+    
+    
+               
+  H O D F V  O O D   V V R O  W V H 7
+    
+    
+    
+ 3 D U H W R  I U R Q W L H U Cmin     
+L=(2.2 105Cmin 0.13
+ & R U U H O D W L R Q =           
+               
+  H O D F V  W V D O   V V R O  W V H 7
+ 3 D U H W R  I U R Q W L H U Cmin
+L=(1.5 105Cmin 0.16
+ & R U U H O D W L R Q =      
+    
+    
+    
+    
+    
+               
+ 7 U D L Q L Q J  & R P S X W H   3 ) O R S V 
+     H O D F V  O O D   H W D U  U R U U H  Q H N R 7     
+    
+    
+ 3 D U H W R  I U R Q W L H U Cmin     
+Err=(8.1 102Cmin 0.0067
+ & R U U H O D W L R Q =           
+               
+ 7 U D L Q L Q J  & R P S X W H   3 ) O R S V 
+     H O D F V  W V D O   H W D U  U R U U H  Q H N R 7
+ 3 D U H W R  I U R Q W L H U Cmin
+Err=(4.4 102Cmin 0.011
+ & R U U H O D W L R Q =      
+Figure6: ScalinglawswithoptimaltrainingcomputeC .Linecolordenotesdifferentmodelsizes.Red
+min
+dashedlinesarepower-lawfitswithequationsinlegend.Axesareonalogarithmicscale.Pearsoncoefficients
+near−0.99indicatestronglinearrelationshipsbetweenlog(C )vs.log(L)orlog(C )vs.log(Err).
+min min
+observedaclearpower-lawscalingtrendforLasafunctionofN,asconsistentwith[44,36,39,1].
+Thepower-lawscalinglawscanbeexpressedas:
+L =(2.0·N)−0.23 and L =(2.5·N)−0.20. (11)
+last avg
+Althoughthescalinglawsaremainlystudiedonthetestloss,wealsoempiricallyobservedsimilar
+power-lawtrendsforthetokenerrorrateErr:
+Err =(4.9·102N)−0.016 and Err =(6.5·102N)−0.010. (12)
+last avg
+These results verify the strong scalability of VAR, by which scaling up VAR transformers can
+continuouslyimprovethemodel’stestperformance.
+ScalinglawswithoptimaltrainingcomputeC . WethenexaminethescalingbehaviorofVAR
+min
+transformerswhenincreasingtrainingcomputeC. Foreachofthe12models,wetracedthetestloss
+LandtokenerrorrateErrasafunctionofC duringtrainingquotedinPFlops(1015floating-point
+operationspersecond). TheresultsareplottedinFig.6. Here,wedrawtheParetofrontierofLand
+ErrtohighlighttheoptimaltrainingcomputeC requiredtoreachacertainvalueoflossorerror.
+min
+Thefittedpower-lawscalinglawsforLandErrasafunctionofC are:
+min
+L =(2.2·10−5C )−0.13 (13)
+last min
+L =(1.5·10−5C )−0.16, (14)
+avg min
+Err =(8.1·10−2C )−0.0067 (15)
+last min
+Err =(4.4·10−2C )−0.011. (16)
+avg min
+Theserelations(14,16)holdacross6ordersofmagnitudeinC ,andourfindingsareconsistent
+min
+withthosein[44,36]: whentrainedwithsufficientdata,largerVARtransformersaremorecompute-
+efficientbecausetheycanreachthesamelevelofperformancewithlesscomputation.
+6 AblationStudy
+In this study, we aim to verify the effectiveness and efficiency of our proposed VAR framework.
+ResultsarereportedinTab.3.
+EffectivenessandefficiencyofVAR. StartingfromthevanillaARtransformerbaselineimplemented
+by[17],wereplaceitsmethodologywithourVARandkeepothersettingsunchangedtogetrow2.
+9
+Table3: AblationstudyofVAR.ThefirsttworowscompareGPT-2-styletransformerstrainedunderARor
+VARalgorithmwithoutanybellsandwhistles. SubsequentlinesshowtheinfluenceofVARenhancements.
+“AdaLN”:adaptivelayernorm. “CFG”:classifier-freeguidance. “Attn. Norm.”: normalizingqandktounit
+vectorsbeforeattention.“Cost”:inferencecostrelativetothebaseline.“∆”:FIDreductiontothebaseline.
+Description Para. Model AdaLN Top-k CFG Cost FID↓ ∆
+1 AR[30] 227M AR ✗ ✗ ✗ 1 18.65 0.00
+2 ARtoVAR 207M VAR-d16 ✗ ✗ ✗ 0.013 5.22 −13.43
+3 +AdaLN 310M VAR-d16 ✓ ✗ ✗ 0.016 4.95 −13.70
+4 +Top-k 310M VAR-d16 ✓ 900 ✗ 0.016 4.64 −14.01
+5 +CFG 310M VAR-d16 ✓ 900 1.5 0.022 3.60 −15.05
+5 +Attn.Norm. 310M VAR-d16 ✓ 900 1.5 0.022 3.30 −15.35
+6 +Scaleup 2.0B VAR-d30 ✓ 900 1.5 0.052 1.73 −16.85
+VARachievesawaymorebetterFID(18.65vs. 5.22)withonly0.013×inferencewall-clockcost
+thantheARmodel,whichdemonstratesaleapinvisualARmodel’sperformanceandefficiency.
+Component-wiseablation. WefurthertestsomekeycomponentsinVAR.Byreplacingthestandard
+LayerNormalization(LN)withAdaptiveLayerNormalization(AdaLN),VARstartsyieldingbetter
+FIDthanbaseline.Byusingthetop-ksamplingsimilartothebaseline,VAR’sFIDisfurtherimproved.
+Byusingtheclassifier-freeguidance(CFG)withratio1.5andnormalizingqandktounitvectors
+beforeattention,wereachtheFIDof3.30,whichis15.35lowertothebaseline,anditsinference
+speedisstill45timesfaster. WefinallyscaleupVARsizeto2.0BandachieveanFIDof1.73. This
+is16.85betterthanthebaselineFID.
+7 LimitationsandFutureWork
+Inthiswork,wemainlyfocusonthedesignoflearningparadigmandkeeptheVQVAEarchitecture
+andtrainingunchangedfromthebaseline[30]tobetterjustifyVARframework’seffectiveness. We
+expectadvancingVQVAEtokenizer[99,60,95]asanotherpromisingwaytoenhanceautoregressive
+generativemodels,whichisorthogonaltoourwork. WebelieveiteratingVARbyadvancedtokenizer
+orsamplingtechniquesintheselatestworkcanfurtherimproveVAR’sperformanceorspeed.
+Text-promptgeneration isanongoingdirectionofourresearch. Giventhatourmodelisfunda-
+mentallysimilartomodernLLMs,itcaneasilybeintegratedwiththemtoperformtext-to-image
+generationthrougheitheranencoder-decoderorin-contextmanner.
+Videogeneration isnotimplementedinthiswork,butitcanbenaturallyextended. Byconsidering
+multi-scalevideofeaturesas3Dpyramids,wecanformulateasimilar“3Dnext-scaleprediction”
+togeneratevideosviaVAR.Comparedtodiffusion-basedgeneratorslikeSORA[14],ourmethod
+has inherent advantages in temporal consistency or integration with LLMs, thus can potentially
+handlelongertemporaldependencies. ThismakesVARcompetitiveinthevideogenerationfield,
+because traditional AR models can be too inefficient for video generation due to their extremely
+highcomputationalcomplexityandslowinferencespeed: itisbecomingprohibitivelyexpensiveto
+generatehigh-resolutionvideoswithtraditionalARmodels,whileVARiscapabletosolvethis. We
+thereforeforeseeapromisingfutureforexploitingVARmodelsintherealmofvideogeneration.
+8 Conclusion
+WeintroducedanewvisualgenerativeframeworknamedVisualAutoRegressivemodeling(VAR)that
+1)theoreticallyaddressessomeissuesinherentinstandardimageautoregressive(AR)models,and
+2)makeslanguage-model-basedARmodelsfirstsurpassstrongdiffusionmodelsintermsofimage
+quality,diversity,dataefficiency,andinferencespeed. UponscalingVARto2billionparameters,we
+observedaclearpower-lawrelationshipbetweentestperformanceandmodelparametersortraining
+compute,withPearsoncoefficientsnearing−0.998,indicatingarobustframeworkforperformance
+prediction. Thesescalinglawsandthepossibilityforzero-shottaskgeneralization,ashallmarksof
+LLMs,havenowbeeninitiallyverifiedinourVARtransformermodels. Wehopeourfindingsand
+opensourcescanfacilitateamoreseamlessintegrationofthesubstantialsuccessesfromthenatural
+languageprocessingdomainintocomputervision,ultimatelycontributingtotheadvancementof
+powerfulmulti-modalintelligence.
+10
+9 Acknowledgements
+Liwei Wang was supported by National Science Foundation of China (NSFC92470123,
+NSFC62276005)andNationalScienceandTechnologyMajorProject(2022ZD0114902).
+A Visualizationofscalingeffect
+TobetterunderstandhowVARmodelsarelearningwhenscaledup,wecomparesomegenerated
+256×256samplesfromVARmodelsof4differentsizes(depth6,16,26,30)and3differenttraining
+stages(20%,60%,100%oftotaltrainingtokens)inFig.7. Tokeepthecontentconsistent,asame
+randomseedandteacher-forcedinitialtokensareused. Theobservedimprovementsinvisualfidelity
+andsoundnessareconsistentwiththescalinglaws,aslargertransformersarethoughtabletolearn
+morecomplexandfine-grainedimagedistributions.
+B Zero-shottaskgeneralization
+Imagein-paintingandout-painting. VAR-d30istested. Forin-andout-painting,weteacher-force
+groundtruthtokensoutsidethemaskandletthemodelonlygeneratetokenswithinthemask. No
+class label information is injected into the model. The results are visualized in Fig. 8. Without
+modificationstothenetworkarchitectureortuningparameters,VARhasachieveddecentresultson
+thesedownstreamtasks,substantiatingthegeneralizationabilityofVAR.
+Class-conditional image editing. Following MaskGIT [17] we also tested VAR on the class-
+conditionalimageeditingtask. Similartothecaseofin-painting,themodelisforcedtogenerate
+tokensonlyintheboundingboxconditionalonsomeclasslabel. Fig.8showsthemodelcanproduce
+plausiblecontentthatfuseswellintothesurroundingcontexts,againverifyingthegeneralityofVAR.
+C TokendependencyinVQVAE
+ToexaminethetokendependencyinVQVAE[30],wechecktheattentionscoresintheself-attention
+layer before the vector quantization module. We randomly sample 4 256×256 images from the
+ImageNetvalidationsetforthisanalysis. Notetheself-attentionlayerin[30]onlyhas1headsofor
+eachimagewejustplotoneattentionmap. TheheatmapinFig.9showstheattentionscoresofeach
+tokentoallothertokens,whichindicateastrong,bidirectionaldependencyamongalltokens. Thisis
+notsurprisingsincetheVQVAEmodel,trainedtoreconstructimages,leveragesself-attentionlayers
+withoutanyattentionmask. Somework[87]hasusedcausalattentioninself-attentionlayersofa
+videoVAE,butwedidnotfindanyimageVAEworkusescausalself-attention.
+D TimecomplexityofARandVARgeneration
+WeprovethetimecomplexityofARandVARgeneration.
+Lemma D.1. For a standard self-attention transformer, the time complexity of AR generation is
+O(n6),whereh=w =nandh,waretheheightandwidthoftheVQcodemap,respectively.
+Proof. Thetotalnumberoftokensish×w =n2. Forthei-th(1≤i≤n2)autoregressiveiteration,
+theattentionscoresbetweeneachtokenandallothertokensneedtobecomputed,whichrequires
+O(i2)time. Sothetotaltimecomplexitywouldbe:
+n2
+(cid:88) 1
+i2 = n2(n2+1)(2n2+1), (17)
+6
+i=1
+WhichisequivalenttoO(n6)basiccomputation.
+ForVAR,itneedsustodefinetheresolutionsequense(h ,w ,h ,w ,...,h ,w )forautoregres-
+1 1 2 2 K K
+sivegeneration,whereh ,w aretheheightandwidthoftheVQcodemapatthei-thautoregressive
+i i
+step,andh =h,w =wreachesthefinalresolution. Supposen =h =w forall1≤k ≤K
+K K k k k
+11
+Figure7: ScalingmodelsizeN andtrainingcomputeCimprovesvisualfidelityandsoundness.Zoomin
+forabetterview. SamplesaredrawnfromVARmodelsof4differentsizesand3differenttrainingstages. 9
+classlabels(fromlefttoright,toptobottom)are:flamingo130,arcticwolf270,macaw88,Siamesecat284,
+oscilloscope688,husky250,mollymawk146,volcano980,andcatamaran484.
+andn = h = w,forsimplicity. Wesettheresolutionsasn = a(k−1) wherea > 1isaconstant
+k
+suchthata(K−1) =n.
+LemmaD.2. Forastandardself-attentiontransformerandgivenhyperparametera>1,thetime
+complexityofVARgenerationisO(n4),whereh=w =nandh,waretheheightandwidthofthe
+last(largest)VQcodemap,respectively.
+12
+original generated
+In-painting
+Out-painting
+Class-cond
+Editing
+Figure 8: Zero-shot evaluation in downstream tasks containing in-painting, out-painting, and class-
+conditional editing. The results show that VAR can generalize to novel downstream tasks without special
+designandfinetuning.Zoominforabetterview.
+Figure9: Tokendependencyplotted.Thenormalizedheatmapofattentionscoresinthelastself-attention
+layerofVQGANencoderisvisualized.4random256×256imagesfromImageNetvalidationsetareused.
+Proof. Considerthek-th(1 ≤ k ≤ K)autoregressivegeneration. Thetotalnumberoftokensof
+currentalltokenmaps(r ,r ,...,r )is:
+1 2 k
+(cid:88) k (cid:88) k a2k−1
+n2 = a2·(k−1) = . (18)
+i a2−1
+i=1 i=1
+Sothetimecomplexityofthek-thautoregressivegenerationwouldbe:
+(cid:18) a2k−1 (cid:19)2
+. (19)
+a2−1
+13
+Bysummingupallautoregressivegenerations,wehave:
+log a(cid:88) (n)+1(cid:18) a2k−1 (cid:19)2
+(20)
+a2−1
+k=1
+(a4−1)logn+ (cid:0) a8n4−2a6n2−2a4(n2−1)+2a2−1 (cid:1) loga
+= (21)
+(a2−1)3(a2+1)loga
+∼O(n4). (22)
+Thiscompletestheproof.
+14
+Figure10: ModelcomparisononImageNet256×256benchmark.Moregenerated512×512samplesby
+VARcanbefoundinthesubmittedSupplementaryMaterialzipfile.
+15
+Figure11: Somegenerated256×256samplesbyVARtrainedonImageNet. Moregenerated512×512
+samplesbyVARcanbefoundinthesubmittedSupplementaryMaterialzipfile.
+16
+References
+[1] J. Achiam, S. Adler, S. Agarwal, L. Ahmad, I. Akkaya, F. L. Aleman, D. Almeida, J. Altenschmidt,
+S.Altman,S.Anadkat,etal. Gpt-4technicalreport. arXivpreprintarXiv:2303.08774,2023. 2,3,8,9
+[2] J.-B. Alayrac, J. Donahue, P. Luc, A. Miech, I. Barr, Y. Hasson, K. Lenc, A. Mensch, K. Millican,
+M. Reynolds, et al. Flamingo: a visual language model for few-shot learning. Advances in neural
+informationprocessingsystems,35:23716–23736,2022. 3
+[3] Alpha-VLLM. Large-dit-imagenet. https://github.com/Alpha-VLLM/LLaMA2-Accessory/tree/
+f7fe19834b23e38f333403b91bb0330afe19f79e/Large-DiT-ImageNet,2024. 2,7,8
+[4] R.Anil,A.M.Dai,O.Firat,M.Johnson,D.Lepikhin,A.Passos,S.Shakeri,E.Taropa,P.Bailey,Z.Chen,
+etal. Palm2technicalreport. arXivpreprintarXiv:2305.10403,2023. 2
+[5] J.Bai,S.Bai,Y.Chu,Z.Cui,K.Dang,X.Deng,Y.Fan,W.Ge,Y.Han,F.Huang,etal. Qwentechnical
+report. arXivpreprintarXiv:2309.16609,2023. 2
+[6] Y.Bai, X.Geng, K.Mangalam, A.Bar, A.Yuille, T.Darrell, J.Malik, andA.A.Efros. Sequential
+modelingenablesscalablelearningforlargevisionmodels. arXivpreprintarXiv:2312.00785,2023. 2,3
+[7] F.Bao,C.Li,J.Zhu,andB.Zhang. Analytic-dpm:ananalyticestimateoftheoptimalreversevariancein
+diffusionprobabilisticmodels. arXivpreprintarXiv:2201.06503,2022. 4
+[8] F.Bao,S.Nie,K.Xue,Y.Cao,C.Li,H.Su,andJ.Zhu. Allareworthwords:Avitbackbonefordiffusion
+models. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,pages
+22669–22679,2023. 4
+[9] F.Bao,C.Xiang,G.Yue,G.He,H.Zhu,K.Zheng,M.Zhao,S.Liu,Y.Wang,andJ.Zhu. Vidu: a
+highlyconsistent, dynamicandskilledtext-to-videogeneratorwithdiffusionmodels. arXivpreprint
+arXiv:2405.04233,2024. 4
+[10] H.Bao, L.Dong, S.Piao, andF.Wei. Beit: Bertpre-trainingofimagetransformers. arXivpreprint
+arXiv:2106.08254,2021. 3
+[11] A.Bar,Y.Gandelsman,T.Darrell,A.Globerson,andA.Efros. Visualpromptingviaimageinpainting.
+AdvancesinNeuralInformationProcessingSystems,35:25005–25017,2022. 3
+[12] O.Bar-Tal,H.Chefer,O.Tov,C.Herrmann,R.Paiss,S.Zada,A.Ephrat,J.Hur,Y.Li,T.Michaeli,etal.
+Lumiere:Aspace-timediffusionmodelforvideogeneration. arXivpreprintarXiv:2401.12945,2024. 4
+[13] A.Brock,J.Donahue,andK.Simonyan. Largescalegantrainingforhighfidelitynaturalimagesynthesis.
+arXivpreprintarXiv:1809.11096,2018. 7
+[14] T.Brooks,B.Peebles,C.Holmes,W.DePue,Y.Guo,L.Jing,D.Schnurr,J.Taylor,T.Luhman,E.Luhman,
+C.Ng,R.Wang,andA.Ramesh. Videogenerationmodelsasworldsimulators. OpenAI,2024. 3,4,8,10
+[15] T.Brown,B.Mann,N.Ryder,M.Subbiah,J.D.Kaplan,P.Dhariwal,A.Neelakantan,P.Shyam,G.Sastry,
+A.Askell,etal. Languagemodelsarefew-shotlearners. Advancesinneuralinformationprocessing
+systems,33:1877–1901,2020. 2,3
+[16] H.Chang,H.Zhang,J.Barber,A.Maschinot,J.Lezama,L.Jiang,M.-H.Yang,K.Murphy,W.T.Freeman,
+M.Rubinstein,etal. Muse:Text-to-imagegenerationviamaskedgenerativetransformers. arXivpreprint
+arXiv:2301.00704,2023. 3
+[17] H.Chang,H.Zhang,L.Jiang,C.Liu,andW.T.Freeman. Maskgit:Maskedgenerativeimagetransformer.
+InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,pages11315–
+11325,2022. 3,7,10,11
+[18] J.Chen,C.Ge,E.Xie,Y.Wu,L.Yao,X.Ren,Z.Wang,P.Luo,H.Lu,andZ.Li. Pixart-\sigma:Weak-to-
+strongtrainingofdiffusiontransformerfor4ktext-to-imagegeneration. arXivpreprintarXiv:2403.04692,
+2024. 4
+[19] J.Chen,J.Yu,C.Ge,L.Yao,E.Xie,Y.Wu,Z.Wang,J.Kwok,P.Luo,H.Lu,etal. Pixart:Fasttraining
+ofdiffusiontransformerforphotorealistictext-to-imagesynthesis. arXivpreprintarXiv:2310.00426,2023.
+4,6
+[20] M.Chen,A.Radford,R.Child,J.Wu,H.Jun,D.Luan,andI.Sutskever. Generativepretrainingfrom
+pixels. InInternationalconferenceonmachinelearning,pages1691–1703.PMLR,2020. 3
+[21] Z.Chen,J.Wu,W.Wang,W.Su,G.Chen,S.Xing,Z.Muyan,Q.Zhang,X.Zhu,L.Lu,etal. Internvl:
+Scaling up vision foundation models and aligning for generic visual-linguistic tasks. arXiv preprint
+arXiv:2312.14238,2023. 3
+[22] A.Chowdhery,S.Narang,J.Devlin,M.Bosma,G.Mishra,A.Roberts,P.Barham,H.W.Chung,C.Sutton,
+S.Gehrmann,etal. Palm: Scalinglanguagemodelingwithpathways. JournalofMachineLearning
+Research,24(240):1–113,2023. 2
+[23] X.Dai,J.Hou,C.-Y.Ma,S.Tsai,J.Wang,R.Wang,P.Zhang,S.Vandenhende,X.Wang,A.Dubey,
+etal. Emu:Enhancingimagegenerationmodelsusingphotogenicneedlesinahaystack. arXivpreprint
+arXiv:2309.15807,2023. 3
+[24] J.Deng,W.Dong,R.Socher,L.-J.Li,K.Li,andL.Fei-Fei. Imagenet:Alarge-scalehierarchicalimage
+database. In2009IEEEconferenceoncomputervisionandpatternrecognition,pages248–255.Ieee,
+2009. 8,9,22,23
+17
+[25] J.Devlin,M.-W.Chang,K.Lee,andK.Toutanova. Bert:Pre-trainingofdeepbidirectionaltransformers
+forlanguageunderstanding. arXivpreprintarXiv:1810.04805,2018. 3
+[26] P.DhariwalandA.Nichol.Diffusionmodelsbeatgansonimagesynthesis.Advancesinneuralinformation
+processingsystems,34:8780–8794,2021. 7
+[27] R.Dong,C.Han,Y.Peng,Z.Qi,Z.Ge,J.Yang,L.Zhao,J.Sun,H.Zhou,H.Wei,etal. Dreamllm:
+Synergisticmultimodalcomprehensionandcreation. arXivpreprintarXiv:2309.11499,2023. 3
+[28] A.Dosovitskiy,L.Beyer,A.Kolesnikov,D.Weissenborn,X.Zhai,T.Unterthiner,M.Dehghani,M.Min-
+derer,G.Heigold,S.Gelly,etal. Animageisworth16x16words:Transformersforimagerecognitionat
+scale. arXivpreprintarXiv:2010.11929,2020. 3
+[29] P.Esser,S.Kulal,A.Blattmann,R.Entezari,J.Müller,H.Saini,Y.Levi,D.Lorenz,A.Sauer,F.Boesel,
+D.Podell,T.Dockhorn,Z.English,K.Lacey,A.Goodwin,Y.Marek,andR.Rombach. Scalingrectified
+flowtransformersforhigh-resolutionimagesynthesis,2024. 3,4,8
+[30] P.Esser, R.Rombach, andB.Ommer. Tamingtransformersforhigh-resolutionimagesynthesis. In
+ProceedingsoftheIEEE/CVFconferenceoncomputervisionandpatternrecognition,pages12873–12883,
+2021. 2,3,4,6,7,10,11
+[31] S.Gao,P.Zhou,M.-M.Cheng,andS.Yan. Mdtv2: Maskeddiffusiontransformerisastrongimage
+synthesizer. arXivpreprintarXiv:2303.14389,2023. 4
+[32] Y.Ge,S.Zhao,Z.Zeng,Y.Ge,C.Li,X.Wang,andY.Shan. Makingllamaseeanddrawwithseed
+tokenizer. arXivpreprintarXiv:2310.01218,2023. 3
+[33] Y.Ge,S.Zhao,J.Zhu,Y.Ge,K.Yi,L.Song,C.Li,X.Ding,andY.Shan. Seed-x:Multimodalmodels
+withunifiedmulti-granularitycomprehensionandgeneration. arXivpreprintarXiv:2404.14396,2024. 3
+[34] A.Gupta,L.Yu,K.Sohn,X.Gu,M.Hahn,L.Fei-Fei,I.Essa,L.Jiang,andJ.Lezama. Photorealistic
+videogenerationwithdiffusionmodels. arXivpreprintarXiv:2312.06662,2023. 4
+[35] K. He, X. Chen, S. Xie, Y. Li, P. Dollár, and R. Girshick. Masked autoencoders are scalable vision
+learners. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpatternrecognition,pages
+16000–16009,2022. 3
+[36] T.Henighan,J.Kaplan,M.Katz,M.Chen,C.Hesse,J.Jackson,H.Jun,T.B.Brown,P.Dhariwal,S.Gray,
+etal. Scalinglawsforautoregressivegenerativemodeling. arXivpreprintarXiv:2010.14701,2020. 2,3,8,
+9
+[37] J.Ho,C.Saharia,W.Chan,D.J.Fleet,M.Norouzi,andT.Salimans. Cascadeddiffusionmodelsforhigh
+fidelityimagegeneration. TheJournalofMachineLearningResearch,23(1):2249–2281,2022. 4,7
+[38] J.HoandT.Salimans. Classifier-freediffusionguidance. arXivpreprintarXiv:2207.12598,2022. 4
+[39] J. Hoffmann, S. Borgeaud, A. Mensch, E. Buchatskaya, T. Cai, E. Rutherford, D. d. L. Casas, L. A.
+Hendricks,J.Welbl,A.Clark,etal. Trainingcompute-optimallargelanguagemodels. arXivpreprint
+arXiv:2203.15556,2022. 2,3,8,9
+[40] L.Huang,W.Yu,W.Ma,W.Zhong,Z.Feng,H.Wang,Q.Chen,W.Peng,X.Feng,B.Qin,etal.Asurvey
+onhallucinationinlargelanguagemodels:Principles,taxonomy,challenges,andopenquestions. arXiv
+preprintarXiv:2311.05232,2023. 2
+[41] M.Jia,L.Tang,B.-C.Chen,C.Cardie,S.Belongie,B.Hariharan,andS.-N.Lim. Visualprompttuning.
+InEuropeanConferenceonComputerVision,pages709–727.Springer,2022. 3
+[42] Y.Jin,K.Xu,L.Chen,C.Liao,J.Tan,B.Chen,C.Lei,A.Liu,C.Song,X.Lei,etal. Unifiedlanguage-
+visionpretrainingwithdynamicdiscretevisualtokenization. arXivpreprintarXiv:2309.04669,2023.
+3
+[43] M.Kang,J.-Y.Zhu,R.Zhang,J.Park,E.Shechtman,S.Paris,andT.Park. Scalingupgansfortext-to-
+imagesynthesis.InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,
+pages10124–10134,2023. 6,7
+[44] J.Kaplan,S.McCandlish,T.Henighan,T.B.Brown,B.Chess,R.Child,S.Gray,A.Radford,J.Wu,and
+D.Amodei. Scalinglawsforneurallanguagemodels. arXivpreprintarXiv:2001.08361,2020. 2,3,6,8,9
+[45] T.Karras,T.Aila,S.Laine,andJ.Lehtinen. Progressivegrowingofgansforimprovedquality,stability,
+andvariation. arXivpreprintarXiv:1710.10196,2017. 2
+[46] T.Karras,M.Aittala,S.Laine,E.Härkönen,J.Hellsten,J.Lehtinen,andT.Aila. Alias-freegenerative
+adversarialnetworks. AdvancesinNeuralInformationProcessingSystems,34:852–863,2021. 6
+[47] T.Karras,S.Laine,andT.Aila. Astyle-basedgeneratorarchitectureforgenerativeadversarialnetworks.
+InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpatternrecognition,pages4401–4410,
+2019. 4,6
+[48] T. Karras, S. Laine, M. Aittala, J. Hellsten, J. Lehtinen, and T. Aila. Analyzing and improving the
+imagequalityofstylegan. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpattern
+recognition,pages8110–8119,2020. 6
+[49] A.Kirillov,E.Mintun,N.Ravi,H.Mao,C.Rolland,L.Gustafson,T.Xiao,S.Whitehead,A.C.Berg,
+W.-Y.Lo,etal. Segmentanything. arXivpreprintarXiv:2304.02643,2023. 3
+[50] A.Kuznetsova,H.Rom,N.Alldrin,J.Uijlings,I.Krasin,J.Pont-Tuset,S.Kamali,S.Popov,M.Malloci,
+A.Kolesnikov,etal. Theopenimagesdatasetv4:Unifiedimageclassification,objectdetection,andvisual
+relationshipdetectionatscale. InternationalJournalofComputerVision,128(7):1956–1981,2020. 6,7
+18
+[51] D. Lee, C. Kim, S. Kim, M. Cho, and W.-S. Han. Autoregressive image generation using residual
+quantization. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPatternRecognition,
+pages11523–11532,2022. 2,3,4,6,7
+[52] T.Li,D.Katabi,andK.He. Self-conditionedimagegenerationviageneratingrepresentations. arXiv
+preprintarXiv:2312.03701,2023. 2,7
+[53] T.-Y.Lin,P.Dollár,R.Girshick,K.He,B.Hariharan,andS.Belongie. Featurepyramidnetworksfor
+objectdetection.InProceedingsoftheIEEEconferenceoncomputervisionandpatternrecognition,pages
+2117–2125,2017. 2
+[54] H.Liu,C.Li,Q.Wu,andY.J.Lee. Visualinstructiontuning. Advancesinneuralinformationprocessing
+systems,36,2024. 3
+[55] D.G.Lowe. Objectrecognitionfromlocalscale-invariantfeatures. InProceedingsoftheseventhIEEE
+internationalconferenceoncomputervision,volume2,pages1150–1157.Ieee,1999. 2
+[56] C.Lu,Y.Zhou,F.Bao,J.Chen,C.Li,andJ.Zhu.Dpm-solver:Afastodesolverfordiffusionprobabilistic
+modelsamplinginaround10steps. AdvancesinNeuralInformationProcessingSystems,35:5775–5787,
+2022. 4
+[57] C.Lu,Y.Zhou,F.Bao,J.Chen,C.Li,andJ.Zhu. Dpm-solver++: Fastsolverforguidedsamplingof
+diffusionprobabilisticmodels. arXivpreprintarXiv:2211.01095,2022. 4
+[58] J. Lu, C. Clark, S. Lee, Z. Zhang, S. Khosla, R. Marten, D. Hoiem, and A. Kembhavi. Unified-io
+2: Scalingautoregressivemultimodalmodelswithvision,language,audio,andaction. arXivpreprint
+arXiv:2312.17172,2023. 2
+[59] J.Lu,C.Clark,R.Zellers,R.Mottaghi,andA.Kembhavi.Unified-io:Aunifiedmodelforvision,language,
+andmulti-modaltasks. arXivpreprintarXiv:2206.08916,2022. 2
+[60] F.Mentzer,D.Minnen,E.Agustsson,andM.Tschannen. Finitescalarquantization:Vq-vaemadesimple.
+arXivpreprintarXiv:2309.15505,2023. 10
+[61] A.Nichol,P.Dhariwal,A.Ramesh,P.Shyam,P.Mishkin,B.McGrew,I.Sutskever,andM.Chen. Glide:
+Towardsphotorealisticimagegenerationandeditingwithtext-guideddiffusionmodels. arXivpreprint
+arXiv:2112.10741,2021. 4
+[62] M. Oquab, T. Darcet, T. Moutakanni, H. Vo, M. Szafraniec, V. Khalidov, P. Fernandez, D. Haziza,
+F.Massa,A.El-Nouby,etal. Dinov2:Learningrobustvisualfeatureswithoutsupervision. arXivpreprint
+arXiv:2304.07193,2023. 3
+[63] L.Ouyang,J.Wu,X.Jiang,D.Almeida,C.Wainwright,P.Mishkin,C.Zhang,S.Agarwal,K.Slama,
+A.Ray,etal. Traininglanguagemodelstofollowinstructionswithhumanfeedback. AdvancesinNeural
+InformationProcessingSystems,35:27730–27744,2022. 2
+[64] W.PeeblesandS.Xie. Scalablediffusionmodelswithtransformers. InProceedingsoftheIEEE/CVF
+InternationalConferenceonComputerVision,pages4195–4205,2023. 2,4,6,7,8
+[65] A.Radford,J.W.Kim,C.Hallacy,A.Ramesh,G.Goh,S.Agarwal,G.Sastry,A.Askell,P.Mishkin,
+J.Clark,etal. Learningtransferablevisualmodelsfromnaturallanguagesupervision. InInternational
+conferenceonmachinelearning,pages8748–8763.PMLR,2021. 3
+[66] A. Radford, K. Narasimhan, T. Salimans, I. Sutskever, et al. Improving language understanding by
+generativepre-training. article,2018. 2
+[67] A.Radford,J.Wu,R.Child,D.Luan,D.Amodei,I.Sutskever,etal. Languagemodelsareunsupervised
+multitasklearners. OpenAIblog,1(8):9,2019. 2,3,6
+[68] A.Ramesh,M.Pavlov,G.Goh,S.Gray,C.Voss,A.Radford,M.Chen,andI.Sutskever. Zero-shot
+text-to-imagegeneration. InInternationalConferenceonMachineLearning,pages8821–8831.PMLR,
+2021. 2
+[69] A.Razavi, A.VandenOord, andO.Vinyals. Generatingdiversehigh-fidelityimageswithvq-vae-2.
+Advancesinneuralinformationprocessingsystems,32,2019. 2,3,7
+[70] S.Reed, A.Oord, N.Kalchbrenner, S.G.Colmenarejo, Z.Wang, Y.Chen, D.Belov, andN.Freitas.
+Parallelmultiscaleautoregressivedensityestimation. InInternationalconferenceonmachinelearning,
+pages2912–2921.PMLR,2017. 3
+[71] R.Rombach,A.Blattmann,D.Lorenz,P.Esser,andB.Ommer. High-resolutionimagesynthesiswith
+latentdiffusionmodels. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpattern
+recognition,pages10684–10695,2022. 4,7
+[72] C. Saharia, W. Chan, S. Saxena, L. Li, J. Whang, E. L. Denton, K. Ghasemipour, R. Gontijo Lopes,
+B.KaragolAyan,T.Salimans,etal. Photorealistictext-to-imagediffusionmodelswithdeeplanguage
+understanding. AdvancesinNeuralInformationProcessingSystems,35:36479–36494,2022. 4
+[73] V. Sanh, A. Webson, C. Raffel, S. H. Bach, L. Sutawika, Z. Alyafeai, A. Chaffin, A. Stiegler, T. L.
+Scao,A.Raja,etal. Multitaskpromptedtrainingenableszero-shottaskgeneralization. arXivpreprint
+arXiv:2110.08207,2021. 3
+[74] A.Sauer,T.Karras,S.Laine,A.Geiger,andT.Aila. Stylegan-t: Unlockingthepowerofgansforfast
+large-scaletext-to-imagesynthesis. arXivpreprintarXiv:2301.09515,2023. 6
+[75] A.Sauer,K.Schwarz,andA.Geiger. Stylegan-xl: Scalingstylegantolargediversedatasets. InACM
+SIGGRAPH2022conferenceproceedings,pages1–10,2022. 6,7
+19
+[76] J.Song,C.Meng,andS.Ermon. Denoisingdiffusionimplicitmodels. arXivpreprintarXiv:2010.02502,
+2020. 4
+[77] Y.SongandS.Ermon. Generativemodelingbyestimatinggradientsofthedatadistribution. Advancesin
+neuralinformationprocessingsystems,32,2019. 4
+[78] Q.Sun,Q.Yu,Y.Cui,F.Zhang,X.Zhang,Y.Wang,H.Gao,J.Liu,T.Huang,andX.Wang. Generative
+pretraininginmultimodality. arXivpreprintarXiv:2307.05222,2023. 3
+[79] Y.Sun,S.Wang,S.Feng,S.Ding,C.Pang,J.Shang,J.Liu,X.Chen,Y.Zhao,Y.Lu,etal. Ernie3.0:
+Large-scaleknowledgeenhancedpre-trainingforlanguageunderstandingandgeneration. arXivpreprint
+arXiv:2107.02137,2021. 2
+[80] G.Team,R.Anil,S.Borgeaud,Y.Wu,J.-B.Alayrac,J.Yu,R.Soricut,J.Schalkwyk,A.M.Dai,A.Hauth,
+etal. Gemini:afamilyofhighlycapablemultimodalmodels. arXivpreprintarXiv:2312.11805,2023. 2
+[81] C.Tian,X.Zhu,Y.Xiong,W.Wang,Z.Chen,W.Wang,Y.Chen,L.Lu,T.Lu,J.Zhou,etal. Mm-
+interleaved: Interleavedimage-textgenerativemodelingviamulti-modalfeaturesynchronizer. arXiv
+preprintarXiv:2401.10208,2024. 3
+[82] K.Tian,Y.Jiang,Q.Diao,C.Lin,L.Wang,andZ.Yuan. Designingbertforconvolutionalnetworks:
+Sparseandhierarchicalmaskedmodeling. arXivpreprintarXiv:2301.03580,2023. 2
+[83] H.Touvron,T.Lavril,G.Izacard,X.Martinet,M.-A.Lachaux,T.Lacroix,B.Rozière,N.Goyal,E.Hambro,
+F.Azhar,etal. Llama:Openandefficientfoundationlanguagemodels. arXivpreprintarXiv:2302.13971,
+2023. 2,3,6
+[84] H.Touvron,L.Martin,K.Stone,P.Albert,A.Almahairi,Y.Babaei,N.Bashlykov,S.Batra,P.Bhargava,
+S.Bhosale,etal. Llama2:Openfoundationandfine-tunedchatmodels. arXivpreprintarXiv:2307.09288,
+2023. 2,3,6
+[85] A.VandenOord,N.Kalchbrenner,L.Espeholt,O.Vinyals,A.Graves,etal.Conditionalimagegeneration
+withpixelcnndecoders. Advancesinneuralinformationprocessingsystems,29,2016. 3
+[86] A.VanDenOord,O.Vinyals,etal.Neuraldiscreterepresentationlearning.Advancesinneuralinformation
+processingsystems,30,2017. 3
+[87] R.Villegas,M.Babaeizadeh,P.-J.Kindermans,H.Moraldo,H.Zhang,M.T.Saffar,S.Castro,J.Kunze,
+andD.Erhan. Phenaki: Variablelengthvideogenerationfromopendomaintextualdescriptions. In
+InternationalConferenceonLearningRepresentations,2022. 11
+[88] H.Wang,H.Tang,L.Jiang,S.Shi,M.F.Naeem,H.Li,B.Schiele,andL.Wang. Git:Towardsgeneralist
+visiontransformerthroughuniversallanguageinterface. arXivpreprintarXiv:2403.09394,2024. 3
+[89] W.Wang,Z.Chen,X.Chen,J.Wu,X.Zhu,G.Zeng,P.Luo,T.Lu,J.Zhou,Y.Qiao,etal.Visionllm:Large
+languagemodelisalsoanopen-endeddecoderforvision-centrictasks. AdvancesinNeuralInformation
+ProcessingSystems,36,2024. 3
+[90] X.Wang,W.Wang,Y.Cao,C.Shen,andT.Huang. Imagesspeakinimages: Ageneralistpainterfor
+in-contextvisuallearning. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPattern
+Recognition,pages6830–6839,2023. 3
+[91] B.Workshop,T.L.Scao,A.Fan,C.Akiki,E.Pavlick,S.Ilic´,D.Hesslow,R.Castagné,A.S.Luccioni,
+F.Yvon, etal. Bloom: A176b-parameteropen-accessmultilinguallanguagemodel. arXivpreprint
+arXiv:2211.05100,2022. 2,3
+[92] J.Yu,X.Li,J.Y.Koh,H.Zhang,R.Pang,J.Qin,A.Ku,Y.Xu,J.Baldridge,andY.Wu. Vector-quantized
+imagemodelingwithimprovedvqgan. arXivpreprintarXiv:2110.04627,2021. 2,3,4,7
+[93] J.Yu,Y.Xu,J.Y.Koh,T.Luong,G.Baid,Z.Wang,V.Vasudevan,A.Ku,Y.Yang,B.K.Ayan,etal.
+Scalingautoregressivemodelsforcontent-richtext-to-imagegeneration. arXivpreprintarXiv:2206.10789,
+2(3):5,2022. 3
+[94] L.Yu,Y.Cheng,K.Sohn,J.Lezama,H.Zhang,H.Chang,A.G.Hauptmann,M.-H.Yang,Y.Hao,I.Essa,
+etal. Magvit: Maskedgenerativevideotransformer. InProceedingsoftheIEEE/CVFConferenceon
+ComputerVisionandPatternRecognition,pages10459–10469,2023. 3
+[95] L.Yu,J.Lezama,N.B.Gundavarapu,L.Versari,K.Sohn,D.Minnen,Y.Cheng,A.Gupta,X.Gu,A.G.
+Hauptmann,etal. Languagemodelbeatsdiffusion–tokenizeriskeytovisualgeneration. arXivpreprint
+arXiv:2310.05737,2023. 3,10
+[96] L.Yu,B.Shi,R.Pasunuru,B.Muller,O.Golovneva,T.Wang,A.Babu,B.Tang,B.Karrer,S.Sheynin,
+etal. Scalingautoregressivemulti-modalmodels: Pretrainingandinstructiontuning. arXivpreprint
+arXiv:2309.02591,2(3),2023. 3
+[97] R.Zhang,P.Isola,A.A.Efros,E.Shechtman,andO.Wang. Theunreasonableeffectivenessofdeep
+featuresasaperceptualmetric. InProceedingsoftheIEEEconferenceoncomputervisionandpattern
+recognition,pages586–595,2018. 4
+[98] S.Zhang,S.Roller,N.Goyal,M.Artetxe,M.Chen,S.Chen,C.Dewan,M.Diab,X.Li,X.V.Lin,etal.
+Opt:Openpre-trainedtransformerlanguagemodels. arXivpreprintarXiv:2205.01068,2022. 3
+[99] C.Zheng,T.-L.Vuong,J.Cai,andD.Phung. Movq:Modulatingquantizedvectorsforhigh-fidelityimage
+generation. AdvancesinNeuralInformationProcessingSystems,35:23412–23425,2022. 2,10
+20
+NeurIPSPaperChecklist
+1. Claims
+Question: Dothemainclaimsmadeintheabstractandintroductionaccuratelyreflectthe
+paper’scontributionsandscope?
+Answer: [Yes]
+Justification: Yes. OurmaincontributionsarealsodetailedinSec.1. AlsoseeSec.5and
+AppendixDformoretheoreticalandexperimentalevidence.
+Guidelines:
+• The answer NA means that the abstract and introduction do not include the claims
+madeinthepaper.
+• Theabstractand/orintroductionshouldclearlystatetheclaimsmade,includingthe
+contributionsmadeinthepaperandimportantassumptionsandlimitations. ANoor
+NAanswertothisquestionwillnotbeperceivedwellbythereviewers.
+• Theclaimsmadeshouldmatchtheoreticalandexperimentalresults,andreflecthow
+muchtheresultscanbeexpectedtogeneralizetoothersettings.
+• Itisfinetoincludeaspirationalgoalsasmotivationaslongasitisclearthatthesegoals
+arenotattainedbythepaper.
+2. Limitations
+Question: Doesthepaperdiscussthelimitationsoftheworkperformedbytheauthors?
+Answer: [Yes]
+Justification: Yes,pleaseseeSec.7forlimitations. Wealsoreportedalotaboutcomputa-
+tionalefficiency,suchasinTab.1andAppendixD.
+Guidelines:
+• TheanswerNAmeansthatthepaperhasnolimitationwhiletheanswerNomeansthat
+thepaperhaslimitations,butthosearenotdiscussedinthepaper.
+• Theauthorsareencouragedtocreateaseparate"Limitations"sectionintheirpaper.
+• Thepapershouldpointoutanystrongassumptionsandhowrobusttheresultsareto
+violationsoftheseassumptions(e.g.,independenceassumptions,noiselesssettings,
+modelwell-specification,asymptoticapproximationsonlyholdinglocally).Theauthors
+shouldreflectonhowtheseassumptionsmightbeviolatedinpracticeandwhatthe
+implicationswouldbe.
+• Theauthorsshouldreflectonthescopeoftheclaimsmade,e.g.,iftheapproachwas
+onlytestedonafewdatasetsorwithafewruns. Ingeneral,empiricalresultsoften
+dependonimplicitassumptions,whichshouldbearticulated.
+• Theauthorsshouldreflectonthefactorsthatinfluencetheperformanceoftheapproach.
+Forexample,afacialrecognitionalgorithmmayperformpoorlywhenimageresolution
+isloworimagesaretakeninlowlighting. Oraspeech-to-textsystemmightnotbe
+usedreliablytoprovideclosedcaptionsforonlinelecturesbecauseitfailstohandle
+technicaljargon.
+• Theauthorsshoulddiscussthecomputationalefficiencyoftheproposedalgorithms
+andhowtheyscalewithdatasetsize.
+• If applicable, the authors should discuss possible limitations of their approach to
+addressproblemsofprivacyandfairness.
+• Whiletheauthorsmightfearthatcompletehonestyaboutlimitationsmightbeusedby
+reviewersasgroundsforrejection,aworseoutcomemightbethatreviewersdiscover
+limitationsthataren’tacknowledgedinthepaper. Theauthorsshouldusetheirbest
+judgmentandrecognizethatindividualactionsinfavoroftransparencyplayanimpor-
+tantroleindevelopingnormsthatpreservetheintegrityofthecommunity. Reviewers
+willbespecificallyinstructedtonotpenalizehonestyconcerninglimitations.
+3. TheoryAssumptionsandProofs
+Question: Foreachtheoreticalresult,doesthepaperprovidethefullsetofassumptionsand
+acomplete(andcorrect)proof?
+21
+Answer: [Yes]
+Justification: Wedetailtheassumptionandproofoftheoreticalresultontimecomplexityin
+AppendixD.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludetheoreticalresults.
+• Allthetheorems, formulas, andproofsinthepapershouldbenumberedandcross-
+referenced.
+• Allassumptionsshouldbeclearlystatedorreferencedinthestatementofanytheorems.
+• Theproofscaneitherappearinthemainpaperorthesupplementalmaterial, butif
+theyappearinthesupplementalmaterial,theauthorsareencouragedtoprovideashort
+proofsketchtoprovideintuition.
+• Inversely,anyinformalproofprovidedinthecoreofthepapershouldbecomplemented
+byformalproofsprovidedinappendixorsupplementalmaterial.
+• TheoremsandLemmasthattheproofreliesuponshouldbeproperlyreferenced.
+4. ExperimentalResultReproducibility
+Question: Doesthepaperfullydisclosealltheinformationneededtoreproducethemainex-
+perimentalresultsofthepapertotheextentthatitaffectsthemainclaimsand/orconclusions
+ofthepaper(regardlessofwhetherthecodeanddataareprovidedornot)?
+Answer: [Yes]
+Justification: Weusepublicly-accessabledatasetImageNet[24]. Weuploadthecodesand
+instructionstorecovertheresults.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Ifthepaperincludesexperiments,aNoanswertothisquestionwillnotbeperceived
+well by the reviewers: Making the paper reproducible is important, regardless of
+whetherthecodeanddataareprovidedornot.
+• Ifthecontributionisadatasetand/ormodel,theauthorsshoulddescribethestepstaken
+tomaketheirresultsreproducibleorverifiable.
+• Dependingonthecontribution,reproducibilitycanbeaccomplishedinvariousways.
+Forexample,ifthecontributionisanovelarchitecture,describingthearchitecturefully
+mightsuffice,orifthecontributionisaspecificmodelandempiricalevaluation,itmay
+benecessarytoeithermakeitpossibleforotherstoreplicatethemodelwiththesame
+dataset,orprovideaccesstothemodel. Ingeneral. releasingcodeanddataisoften
+onegoodwaytoaccomplishthis,butreproducibilitycanalsobeprovidedviadetailed
+instructionsforhowtoreplicatetheresults,accesstoahostedmodel(e.g.,inthecase
+ofalargelanguagemodel),releasingofamodelcheckpoint,orothermeansthatare
+appropriatetotheresearchperformed.
+• WhileNeurIPSdoesnotrequirereleasingcode,theconferencedoesrequireallsubmis-
+sionstoprovidesomereasonableavenueforreproducibility,whichmaydependonthe
+natureofthecontribution. Forexample
+(a) Ifthecontributionisprimarilyanewalgorithm,thepapershouldmakeitclearhow
+toreproducethatalgorithm.
+(b) Ifthecontributionisprimarilyanewmodelarchitecture,thepapershoulddescribe
+thearchitectureclearlyandfully.
+(c) Ifthecontributionisanewmodel(e.g.,alargelanguagemodel),thenthereshould
+eitherbeawaytoaccessthismodelforreproducingtheresultsorawaytoreproduce
+themodel(e.g.,withanopen-sourcedatasetorinstructionsforhowtoconstruct
+thedataset).
+(d) We recognize that reproducibility may be tricky in some cases, in which case
+authorsarewelcometodescribetheparticularwaytheyprovideforreproducibility.
+Inthecaseofclosed-sourcemodels,itmaybethataccesstothemodelislimitedin
+someway(e.g.,toregisteredusers),butitshouldbepossibleforotherresearchers
+tohavesomepathtoreproducingorverifyingtheresults.
+5. Openaccesstodataandcode
+22
+Question: Doesthepaperprovideopenaccesstothedataandcode,withsufficientinstruc-
+tionstofaithfullyreproducethemainexperimentalresults,asdescribedinsupplemental
+material?
+Answer: [Yes]
+Justification: We use publicly-accessable dataset ImageNet [24]. We upload the codes
+and instructions to recover the results. Once the blind review period is finished, we’ll
+open-sourceallcodes,instructions,andmodelcheckpoints.
+Guidelines:
+• TheanswerNAmeansthatpaperdoesnotincludeexperimentsrequiringcode.
+• Please see the NeurIPS code and data submission guidelines (https://nips.cc/
+public/guides/CodeSubmissionPolicy)formoredetails.
+• Whileweencouragethereleaseofcodeanddata,weunderstandthatthismightnotbe
+possible,so“No”isanacceptableanswer. Paperscannotberejectedsimplyfornot
+includingcode,unlessthisiscentraltothecontribution(e.g.,foranewopen-source
+benchmark).
+• Theinstructionsshouldcontaintheexactcommandandenvironmentneededtorunto
+reproducetheresults. SeetheNeurIPScodeanddatasubmissionguidelines(https:
+//nips.cc/public/guides/CodeSubmissionPolicy)formoredetails.
+• Theauthorsshouldprovideinstructionsondataaccessandpreparation,includinghow
+toaccesstherawdata,preprocesseddata,intermediatedata,andgenerateddata,etc.
+• Theauthorsshouldprovidescriptstoreproduceallexperimentalresultsforthenew
+proposedmethodandbaselines. Ifonlyasubsetofexperimentsarereproducible,they
+shouldstatewhichonesareomittedfromthescriptandwhy.
+• Atsubmissiontime, topreserveanonymity, theauthorsshouldreleaseanonymized
+versions(ifapplicable).
+• Providingasmuchinformationaspossibleinsupplementalmaterial(appendedtothe
+paper)isrecommended,butincludingURLstodataandcodeispermitted.
+6. ExperimentalSetting/Details
+Question: Doesthepaperspecifyallthetrainingandtestdetails(e.g.,datasplits,hyper-
+parameters, how they were chosen, type of optimizer, etc.) necessary to understand the
+results?
+Answer: [Yes]
+Justification: PleaseseeSec.5andAppendix4.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Theexperimentalsettingshouldbepresentedinthecoreofthepapertoalevelofdetail
+thatisnecessarytoappreciatetheresultsandmakesenseofthem.
+• Thefulldetailscanbeprovidedeitherwiththecode,inappendix,orassupplemental
+material.
+7. ExperimentStatisticalSignificance
+Question:Doesthepaperreporterrorbarssuitablyandcorrectlydefinedorotherappropriate
+informationaboutthestatisticalsignificanceoftheexperiments?
+Answer: [No]
+Justification: Duetotheresourcelimitation,wedonotreporterrorbars. Pleasenotethatin
+Sec.5wespentnumerousresources(wetrained12differentmodels)forourscalinglaw
+study,whichmakesitprohibitivelytoruneachexperimentsformultipletimes.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• Theauthorsshouldanswer"Yes"iftheresultsareaccompaniedbyerrorbars,confi-
+denceintervals,orstatisticalsignificancetests,atleastfortheexperimentsthatsupport
+themainclaimsofthepaper.
+23
+• Thefactorsofvariabilitythattheerrorbarsarecapturingshouldbeclearlystated(for
+example,train/testsplit,initialization,randomdrawingofsomeparameter,oroverall
+runwithgivenexperimentalconditions).
+• Themethodforcalculatingtheerrorbarsshouldbeexplained(closedformformula,
+calltoalibraryfunction,bootstrap,etc.)
+• Theassumptionsmadeshouldbegiven(e.g.,Normallydistributederrors).
+• Itshouldbeclearwhethertheerrorbaristhestandarddeviationorthestandarderror
+ofthemean.
+• It is OK to report 1-sigma error bars, but one should state it. The authors should
+preferablyreporta2-sigmaerrorbarthanstatethattheyhavea96%CI,ifthehypothesis
+ofNormalityoferrorsisnotverified.
+• Forasymmetricdistributions,theauthorsshouldbecarefulnottoshowintablesor
+figuressymmetricerrorbarsthatwouldyieldresultsthatareoutofrange(e.g. negative
+errorrates).
+• Iferrorbarsarereportedintablesorplots,Theauthorsshouldexplaininthetexthow
+theywerecalculatedandreferencethecorrespondingfiguresortablesinthetext.
+8. ExperimentsComputeResources
+Question: Foreachexperiment,doesthepaperprovidesufficientinformationonthecom-
+puterresources(typeofcomputeworkers,memory,timeofexecution)neededtoreproduce
+theexperiments?
+Answer: [Yes]
+Justification: WereportthetrainingPFlopsinFig.6andspeedinTab.1andTab.2.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotincludeexperiments.
+• ThepapershouldindicatethetypeofcomputeworkersCPUorGPU,internalcluster,
+orcloudprovider,includingrelevantmemoryandstorage.
+• Thepapershouldprovidetheamountofcomputerequiredforeachoftheindividual
+experimentalrunsaswellasestimatethetotalcompute.
+• Thepapershoulddisclosewhetherthefullresearchprojectrequiredmorecompute
+thantheexperimentsreportedinthepaper(e.g.,preliminaryorfailedexperimentsthat
+didn’tmakeitintothepaper).
+9. CodeOfEthics
+Question: Doestheresearchconductedinthepaperconform, ineveryrespect, withthe
+NeurIPSCodeofEthicshttps://neurips.cc/public/EthicsGuidelines?
+Answer: [Yes]
+Justification: WefollowedtheNeurIPSCodeofEthics.
+Guidelines:
+• TheanswerNAmeansthattheauthorshavenotreviewedtheNeurIPSCodeofEthics.
+• IftheauthorsanswerNo,theyshouldexplainthespecialcircumstancesthatrequirea
+deviationfromtheCodeofEthics.
+• Theauthorsshouldmakesuretopreserveanonymity(e.g.,ifthereisaspecialconsid-
+erationduetolawsorregulationsintheirjurisdiction).
+10. BroaderImpacts
+Question: Does the paper discuss both potential positive societal impacts and negative
+societalimpactsoftheworkperformed?
+Answer: [No]
+Justification: Thisworkfocusesonaacademic,publicly-availablebenchmarkImageNet.
+This work is not related to any private or personal data, and there’s no explicit negative
+socialimpacts.
+Guidelines:
+• TheanswerNAmeansthatthereisnosocietalimpactoftheworkperformed.
+24
+• IftheauthorsanswerNAorNo,theyshouldexplainwhytheirworkhasnosocietal
+impactorwhythepaperdoesnotaddresssocietalimpact.
+• Examplesofnegativesocietalimpactsincludepotentialmaliciousorunintendeduses
+(e.g.,disinformation,generatingfakeprofiles,surveillance),fairnessconsiderations
+(e.g.,deploymentoftechnologiesthatcouldmakedecisionsthatunfairlyimpactspecific
+groups),privacyconsiderations,andsecurityconsiderations.
+• Theconferenceexpectsthatmanypaperswillbefoundationalresearchandnottied
+toparticularapplications,letalonedeployments. However,ifthereisadirectpathto
+anynegativeapplications,theauthorsshouldpointitout. Forexample,itislegitimate
+topointoutthatanimprovementinthequalityofgenerativemodelscouldbeusedto
+generatedeepfakesfordisinformation. Ontheotherhand,itisnotneededtopointout
+thatagenericalgorithmforoptimizingneuralnetworkscouldenablepeopletotrain
+modelsthatgenerateDeepfakesfaster.
+• Theauthorsshouldconsiderpossibleharmsthatcouldarisewhenthetechnologyis
+being used as intended and functioning correctly, harms that could arise when the
+technologyisbeingusedasintendedbutgivesincorrectresults,andharmsfollowing
+from(intentionalorunintentional)misuseofthetechnology.
+• Iftherearenegativesocietalimpacts,theauthorscouldalsodiscusspossiblemitigation
+strategies (e.g., gated release of models, providing defenses in addition to attacks,
+mechanismsformonitoringmisuse,mechanismstomonitorhowasystemlearnsfrom
+feedbackovertime,improvingtheefficiencyandaccessibilityofML).
+11. Safeguards
+Question: Doesthepaperdescribesafeguardsthathavebeenputinplaceforresponsible
+releaseofdataormodelsthathaveahighriskformisuse(e.g.,pretrainedlanguagemodels,
+imagegenerators,orscrapeddatasets)?
+Answer: [No]
+Justification: Wedonotforeseeanyhighriskformisuseofthiswork.
+Guidelines:
+• TheanswerNAmeansthatthepaperposesnosuchrisks.
+• Releasedmodelsthathaveahighriskformisuseordual-useshouldbereleasedwith
+necessarysafeguardstoallowforcontrolleduseofthemodel,forexamplebyrequiring
+thatusersadheretousageguidelinesorrestrictionstoaccessthemodelorimplementing
+safetyfilters.
+• DatasetsthathavebeenscrapedfromtheInternetcouldposesafetyrisks. Theauthors
+shoulddescribehowtheyavoidedreleasingunsafeimages.
+• Werecognizethatprovidingeffectivesafeguardsischallenging,andmanypapersdo
+notrequirethis,butweencourageauthorstotakethisintoaccountandmakeabest
+faitheffort.
+12. Licensesforexistingassets
+Question: Arethecreatorsororiginalownersofassets(e.g.,code,data,models),usedin
+thepaper,properlycreditedandarethelicenseandtermsofuseexplicitlymentionedand
+properlyrespected?
+Answer: [Yes]
+Justification: Yes,wecreditedtheminappropriateways.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotuseexistingassets.
+• Theauthorsshouldcitetheoriginalpaperthatproducedthecodepackageordataset.
+• Theauthorsshouldstatewhichversionoftheassetisusedand,ifpossible,includea
+URL.
+• Thenameofthelicense(e.g.,CC-BY4.0)shouldbeincludedforeachasset.
+• Forscrapeddatafromaparticularsource(e.g.,website),thecopyrightandtermsof
+serviceofthatsourceshouldbeprovided.
+25
+• If assets are released, the license, copyright information, and terms of use in the
+packageshouldbeprovided. Forpopulardatasets,paperswithcode.com/datasets
+hascuratedlicensesforsomedatasets. Theirlicensingguidecanhelpdeterminethe
+licenseofadataset.
+• Forexistingdatasetsthatarere-packaged,boththeoriginallicenseandthelicenseof
+thederivedasset(ifithaschanged)shouldbeprovided.
+• Ifthisinformationisnotavailableonline,theauthorsareencouragedtoreachoutto
+theasset’screators.
+13. NewAssets
+Question:Arenewassetsintroducedinthepaperwelldocumentedandisthedocumentation
+providedalongsidetheassets?
+Answer: [NA]
+Justification: Thepaperdoesnotreleasenewassets.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotreleasenewassets.
+• Researchersshouldcommunicatethedetailsofthedataset/code/modelaspartoftheir
+submissions via structured templates. This includes details about training, license,
+limitations,etc.
+• Thepapershoulddiscusswhetherandhowconsentwasobtainedfrompeoplewhose
+assetisused.
+• Atsubmissiontime,remembertoanonymizeyourassets(ifapplicable). Youcaneither
+createananonymizedURLorincludeananonymizedzipfile.
+14. CrowdsourcingandResearchwithHumanSubjects
+Question: Forcrowdsourcingexperimentsandresearchwithhumansubjects,doesthepaper
+includethefulltextofinstructionsgiventoparticipantsandscreenshots,ifapplicable,as
+wellasdetailsaboutcompensation(ifany)?
+Answer: [NA]
+Justification: Thepaperdoesnotinvolvecrowdsourcingnorresearchwithhumansubjects.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotinvolvecrowdsourcingnorresearchwith
+humansubjects.
+• Includingthisinformationinthesupplementalmaterialisfine,butifthemaincontribu-
+tionofthepaperinvolveshumansubjects,thenasmuchdetailaspossibleshouldbe
+includedinthemainpaper.
+• AccordingtotheNeurIPSCodeofEthics,workersinvolvedindatacollection,curation,
+orotherlaborshouldbepaidatleasttheminimumwageinthecountryofthedata
+collector.
+15. InstitutionalReviewBoard(IRB)ApprovalsorEquivalentforResearchwithHuman
+Subjects
+Question: Doesthepaperdescribepotentialrisksincurredbystudyparticipants,whether
+suchrisksweredisclosedtothesubjects,andwhetherInstitutionalReviewBoard(IRB)
+approvals(oranequivalentapproval/reviewbasedontherequirementsofyourcountryor
+institution)wereobtained?
+Answer: [NA]
+Justification: Thepaperdoesnotinvolvecrowdsourcingnorresearchwithhumansubjects.
+Guidelines:
+• TheanswerNAmeansthatthepaperdoesnotinvolvecrowdsourcingnorresearchwith
+humansubjects.
+• Dependingonthecountryinwhichresearchisconducted,IRBapproval(orequivalent)
+mayberequiredforanyhumansubjectsresearch. IfyouobtainedIRBapproval,you
+shouldclearlystatethisinthepaper.
+26
+• Werecognizethattheproceduresforthismayvarysignificantlybetweeninstitutions
+andlocations,andweexpectauthorstoadheretotheNeurIPSCodeofEthicsandthe
+guidelinesfortheirinstitution.
+• Forinitialsubmissions,donotincludeanyinformationthatwouldbreakanonymity(if
+applicable),suchastheinstitutionconductingthereview.
+27

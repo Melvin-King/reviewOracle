@@ -1,0 +1,242 @@
+[
+  {
+    "id": "R1-C1",
+    "topic": "Writing",
+    "sentiment": "Positive",
+    "statement": "论文写作良好，在适当的地方有清晰的数学细节指引。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The paper is well written, with clear pointers to mathematical details where appropriate."
+  },
+  {
+    "id": "R1-C2",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "空间特异性与上下文可分离性之间的权衡是新颖且听起来合理的。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The tradeoff between spatial specificity and context separability is novel and sounding."
+  },
+  {
+    "id": "R1-C3",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "提出的几何分析是研究位置细胞中上下文表征性质的一个新颖框架。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The proposed geometric analysis is a novel framework for studying the nature of contextual representations in place cells."
+  },
+  {
+    "id": "R1-C4",
+    "topic": "Experiments",
+    "sentiment": "Negative",
+    "statement": "论文只处理了全局重映射，没有研究所提模型在部分重映射或速率重映射方面的意义。",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The paper only addresses global remapping, and did not study the implications of proposed model in terms of partial or rate remapping."
+  },
+  {
+    "id": "R2-C1",
+    "topic": "Significance",
+    "sentiment": "Positive",
+    "statement": "This paper offers a computational investigation on the problem of encoding environmental information using population codes based on place cells, which are known to play a key role in hippocampal encoding.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "Place cells are known to play a key role in hippocampal encoding of context, experience/goals and spatial locations."
+  },
+  {
+    "id": "R2-C2",
+    "topic": "Novelty",
+    "sentiment": "Neutral",
+    "statement": "I am not familiar enough with the related literature to evaluate the originality of the approach.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R2-C3",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "The analyses are well-conducted and well-motivated.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "From my understanding the analyses are well-conducted and well-motivated."
+  },
+  {
+    "id": "R2-C4",
+    "topic": "Writing",
+    "sentiment": "Positive",
+    "statement": "The paper is written in a clear way.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The paper is written in a clear way."
+  },
+  {
+    "id": "R2-C5",
+    "topic": "Significance",
+    "sentiment": "Negative",
+    "statement": "The main issue with this submission is that it might have a limited relevance (and impact) on the NeurIPS community.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "There is not a single NeurIPS paper cited in the literature, suggesting that this type of work might be more appropriate for other venues."
+  },
+  {
+    "id": "R2-C6",
+    "topic": "Writing",
+    "sentiment": "Negative",
+    "statement": "Please always explicitly describe the variables used in equations (also in figure captions).",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R2-C7",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "The requirement for manifold separability (no intersections) seems quite strong.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "\"To determine whether two contexts manifolds are separable, we use a strict criterion: the two manifolds are separable if and only if they do not have any intersections.\""
+  },
+  {
+    "id": "R2-C8",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "Could the strict separability criterion be replaced by a smoother criterion and/or by some form of probabilistic (linear) discriminability?",
+    "substantiation_type": "Vague",
+    "substantiation_content": "This requirement seems quite strong, because it assumes that we need to decode context from any position in the manifold."
+  },
+  {
+    "id": "R2-C9",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "How would be possible to test the hypothesis about selective inhibition leading to different types of memory impairment experimentally?",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "\"We postulate that selective inhibition along the hippocampus will lead to different types of memory impairment for spatial tasks\". The authors mention \"performing confusion experiments\" but it would be interesting to better discuss how such experiments would look like."
+  },
+  {
+    "id": "R2-C10",
+    "topic": "Writing",
+    "sentiment": "Negative",
+    "statement": "Please always explicitly state where the information can be found in the Supplemental material.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R2-C11",
+    "topic": "Writing",
+    "sentiment": "Negative",
+    "statement": "Line 157: determine (likely a note about a typo or missing word).",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "Line 157: determine"
+  },
+  {
+    "id": "R2-C12",
+    "topic": "Limitations",
+    "sentiment": "Neutral",
+    "statement": "The authors have discussed possible limitations of their work, though not in a totally explicit way.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The authors have discussed possible limitations of their work, though not in a totally explicit way."
+  },
+  {
+    "id": "R3-C1",
+    "topic": "Novelty",
+    "sentiment": "Positive",
+    "statement": "The paper develops an analytical framework for understanding the coding of space and context in the hippocampus in a novel way.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "The novel contributions include a characterization of how tuning width contributes to these functions and the trade-off between them. In particular, smaller tuning widths improve spatial localization but impair context discrimination."
+  },
+  {
+    "id": "R3-C2",
+    "topic": "Significance",
+    "sentiment": "Positive",
+    "statement": "The paper addresses an important set of issues within systems neuroscience and could have a potentially large impact, at least within the community of theorists.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The hippocampus has long been implicated in both spatial and contextual coding, but the relationship between these has not been elucidated so systematically."
+  },
+  {
+    "id": "R3-C3",
+    "topic": "Writing",
+    "sentiment": "Positive",
+    "statement": "The paper is clearly written.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R3-C4",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "The analysis is rigorous.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R3-C5",
+    "topic": "Experiments",
+    "sentiment": "Positive",
+    "statement": "The paper makes some interesting experimental predictions.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "The paper makes an interesting and testable prediction that the more widely tuned cells in the dorsal hippocampus are specialized for context discrimination, whereas the more narrowly tuned cells in the ventral hippocampus are specialized for fine-grained spatial discrimination."
+  },
+  {
+    "id": "R3-C6",
+    "topic": "Reproducibility",
+    "sentiment": "Negative",
+    "statement": "The paper's claim about the dorsal-ventral axis is backwards and not supported by the cited literature.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "Ventral cells have wider tuning than dorsal cells. The classic study of this is Kjelstrup et al. (2008, Science), not cited here. The authors cite two papers (Lee et al., 2020; Tanni et al., 2022) to support their claim, neither of which actually support this claim. The Lee et al. paper only measures activity in dorsal cells, and it's not clear which subregion was measured in the Tanni paper."
+  },
+  {
+    "id": "R3-C7",
+    "topic": "Reproducibility",
+    "sentiment": "Negative",
+    "statement": "The model's empirical predictions regarding selective inhibition experiments are not consistently supported by existing studies.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "Such experiments have been done, and unfortunately they don't consistently support the predictions (none of the studies mentioned below are cited in the paper). The review by Fanselow & Dong (2010, Neuron) provides a more systematic discussion. Specific studies: Richmond et al. (1999, Behavioral Neuroscience) showed that ventral lesions actually *improve* water-maze performance, whereas dorsal lesions apparently have no effect. Hock & Bunsey (1998, Journal of Neuroscience) showed that dorsal, but not ventral, lesions impaired performance on a spatial delayed alternation task. Moser et al. (1995, PNAS) showed that dorsal lesions selectively impair spatial memory, whereas ventral lesions do not."
+  },
+  {
+    "id": "R3-C8",
+    "topic": "Reproducibility",
+    "sentiment": "Positive",
+    "statement": "The prediction that place cells should cluster near boundaries to support context segregation is consistent with existing experimental findings.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "Consistent with the model prediction, place fields tend to occur near boundaries (e.g., Wiener et al., 1989, Journal of Neuroscience; Hetherington & Shapiro, 1997, Behavioral Neuroscience)."
+  },
+  {
+    "id": "R3-C9",
+    "topic": "Writing",
+    "sentiment": "Negative",
+    "statement": "The term 'hippocampus' is inconsistently upper-case/lower-case.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R3-C10",
+    "topic": "Writing",
+    "sentiment": "Negative",
+    "statement": "There are several minor typographical and grammatical errors in the manuscript.",
+    "substantiation_type": "Specific_Citation",
+    "substantiation_content": "p. 3: Eq. 1 should have brackets around the exponentiated term. p. 5: 'dominate' -> 'dominant' [also p. 8]. p. 6: 'an increase the distance' -> 'an increase in the distance'. p. 6: 'severally' -> 'severely'. p. 9: 'environmnet' -> 'environment'."
+  },
+  {
+    "id": "R3-C11",
+    "topic": "Reproducibility",
+    "sentiment": "Neutral",
+    "statement": "The authors should better relate their work to existing literature.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "I understand that due to space limitations it is unlikely that they will be able to comprehensively address this literature, but I want to make sure that the work is at least largely in alignment with what is known."
+  },
+  {
+    "id": "R3-C12",
+    "topic": "Experiments",
+    "sentiment": "Neutral",
+    "statement": "The model's predictions depend on noise level, which raises a question about experimental testability.",
+    "substantiation_type": "Vague",
+    "substantiation_content": "Is this something that can be tested experimentally using firing rate variability?"
+  },
+  {
+    "id": "R3-C13",
+    "topic": "Significance",
+    "sentiment": "Neutral",
+    "statement": "The authors briefly discuss some modeling limitations.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  },
+  {
+    "id": "R3-C14",
+    "topic": "Significance",
+    "sentiment": "Neutral",
+    "statement": "There are no negative societal effects of this work.",
+    "substantiation_type": "None",
+    "substantiation_content": ""
+  }
+]
