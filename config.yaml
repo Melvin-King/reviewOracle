@@ -1,0 +1,49 @@
+# LLM API 配置
+llm:
+  provider: "deepseek"  # 可选: "openai", "anthropic", "deepseek"
+  api_key: "sk-78c82a745419440abd75bdfd3839da50"  # 从环境变量或 .env 文件读取，或直接填写在这里
+  model: "deepseek-chat"  # DeepSeek 模型: "deepseek-chat" 或 "deepseek-coder"
+  temperature: 0.3
+  max_tokens: 2000
+  # base_url: "https://api.deepseek.com"  # DeepSeek 默认地址，通常不需要手动设置
+
+# RAG 配置
+rag:
+  method: "hybrid"  # "simple", "embedding", 或 "hybrid"
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  top_k: 5
+  chunk_size: 500
+  chunk_overlap: 50
+  use_cache: true  # 是否缓存索引
+  index_path: "data/processed/rag_indices"  # 索引保存路径
+  # 混合 RAG 权重配置（仅当 method="hybrid" 时生效）
+  keyword_weight: 0.3  # 关键词匹配权重
+  semantic_weight: 0.7  # 语义检索权重
+  # 重排序配置
+  use_reranking: false  # 是否启用重排序（使用 Cross-Encoder）
+  reranker_model: "cross-encoder/ms-marco-MiniLM-L-6-v2"  # Cross-Encoder 模型
+  reranking_initial_top_k: 20  # 初步检索返回的候选数量（重排序前）
+
+# 权重计算参数
+weighting:
+  alpha: 0.5  # Hollowness 惩罚系数
+  beta: 0.5   # Hallucination 惩罚系数
+
+# 数据源配置
+data_source:
+  nips_year: 2024
+  num_papers: 3
+  download_path: "data/raw"
+  # OpenReview API 配置
+  openreview_base_url: "https://api2.openreview.net"  # 注意：实际使用的是 api2，不是 api
+
+# 决策阈值
+synthesis:
+  accept_threshold: 0.6
+  topics: ["Novelty", "Experiments", "Writing", "Significance", "Reproducibility"]
+
+# 输出配置
+output:
+  results_path: "data/results"
+  save_intermediate: true
+
