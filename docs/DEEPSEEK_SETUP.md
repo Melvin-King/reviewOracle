@@ -1,119 +1,162 @@
-# DeepSeek 配置指南
+# DeepSeek Configuration Guide
 
-## 配置方式
+## Configuration Methods
 
-DeepSeek 支持两种配置方式：
+DeepSeek supports two configuration methods:
 
-### 方式 1：在 config.yaml 中配置（推荐）
+### Method 1: Configure in config.yaml (Recommended)
 
-编辑 `config.yaml` 文件：
+Edit the `config.yaml` file:
 
 ```yaml
 llm:
-  provider: "deepseek"
-  api_key: "sk-your-deepseek-api-key-here"  # 直接填写你的 API key
-  model: "deepseek-chat"  # 或 "deepseek-coder"
-  temperature: 0.3
-  max_tokens: 2000
+
+provider: "deepseek"
+
+api_key: "sk-your-deepseek-api-key-here" # Directly enter your API key
+
+model: "deepseek-chat" # or "deepseek-coder"
+
+temperature: 0.3
+
+max_tokens: 2000
+
 ```
 
-### 方式 2：使用环境变量（更安全）
+### Method 2: Use Environment Variables (More Secure)
 
-1. 设置环境变量：
-   ```bash
-   # Windows PowerShell
-   $env:DEEPSEEK_API_KEY="sk-your-deepseek-api-key-here"
-   
-   # Windows CMD
-   set DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
-   
-   # Linux/Mac
-   export DEEPSEEK_API_KEY="sk-your-deepseek-api-key-here"
-   ```
+1. Set environment variables:
 
-2. 在 `config.yaml` 中：
-   ```yaml
-   llm:
-     provider: "deepseek"
-     api_key: ""  # 留空，会从环境变量读取
-     model: "deepseek-chat"
-     temperature: 0.3
-   ```
+```bash
 
-### 方式 3：使用 .env 文件（推荐用于开发）
+# Windows PowerShell
 
-1. 在项目根目录创建 `.env` 文件：
-   ```
-   DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
-   ```
+$env:DEEPSEEK_API_KEY="sk-your-deepseek-api-key-here"
 
-2. 安装 python-dotenv（已在 requirements.txt 中）：
-   ```bash
-   pip install python-dotenv
-   ```
+# Windows CMD
 
-3. 在代码中加载（可选，如果使用环境变量方式会自动读取）
+set DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
 
-## 获取 DeepSeek API Key
+# Linux/Mac
 
-1. 访问 [DeepSeek 官网](https://www.deepseek.com/)
-2. 注册/登录账号
-3. 进入 API 管理页面
-4. 创建新的 API Key
-5. 复制 API Key（格式类似：`sk-xxxxxxxxxxxxx`）
+export DEEPSEEK_API_KEY="sk-your-deepseek-api-key-here"
 
-## 模型选择
+```
 
-- **deepseek-chat**: 通用对话模型，适合大多数任务
-- **deepseek-coder**: 代码生成专用模型，适合代码相关任务
+2. In `config.yaml`:
 
-## 注意事项
+``yaml
 
-1. **API Key 安全**：
-   - 不要将 API Key 提交到 Git 仓库
-   - `.env` 文件已在 `.gitignore` 中
-   - 如果直接在 `config.yaml` 中填写，注意不要提交到 Git
+llm:
 
-2. **API 地址**：
-   - DeepSeek 默认 API 地址：`https://api.deepseek.com`
-   - 通常不需要手动设置 `base_url`
-   - 如果需要自定义，可以在 config.yaml 中添加 `base_url` 字段
+provider: "deepseek"
 
-3. **费用**：
-   - 注意 DeepSeek 的 API 调用费用
-   - 建议设置使用限额
+api_key: "" # Leave blank, will be read from environment variables
 
-## 测试配置
+model: "deepseek-chat"
 
-运行以下命令测试配置是否正确：
+temperature: 0.3
 
-```python
+```
+
+### Method 3: Using .env files (recommended for development)
+
+1. Create a `.env` file in the project root directory:
+
+```
+DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
+
+```
+
+2. Install python-dotenv (already in requirements.txt):
+
+``bash
+
+pip install python-dotenv
+
+```
+
+3. Load in code (optional, will be automatically read if using environment variables)
+
+## Obtain DeepSeek API Key
+
+1. Visit [DeepSeek Official Website](https://www.deepseek.com/)
+
+2. Register/Log in to an account
+
+3. Go to the API management page
+
+4. Create a new API Key
+
+5. Copy the API Key (format similar to: `sk-xxxxxxxxxxxxx`)
+
+## Model Selection
+
+- **deepseek-chat**: General dialogue model, suitable for most tasks
+
+- **deepseek-coder**: Code generation model, suitable for code-related tasks
+
+## Precautions
+
+1. **API Key Security**:
+
+- Do not commit the API Key to the Git repository
+
+- The `.env` file is already in `.gitignore`
+
+- If you fill it directly in `config.yaml`, be careful not to commit it to Git
+
+2. **API Address**:
+
+- DeepSeek default API Address: `https://api.deepseek.com`
+
+- Usually, you don't need to manually set `base_url`.
+
+- If you need to customize it, you can add the `base_url` field to `config.yaml`.
+
+3. **Costs**:
+
+- Note the API call costs of DeepSeek.
+
+- It is recommended to set usage limits.
+
+## Test Configuration
+
+Run the following command to test if the configuration is correct:
+
+``python
 from src.utils.llm_client import LLMClient
 
-# 测试 DeepSeek 连接
+# Test DeepSeek connection
 client = LLMClient(
-    provider="deepseek",
-    model="deepseek-chat",
-    api_key="your-api-key"  # 或从环境变量读取
-)
+provider="deepseek",
+model="deepseek-chat",
 
-response = client.call("你好，请简单介绍一下自己")
+api_key="your-api-key" # or read from environment variables
+
+
+response = client.call("Hello, please briefly introduce yourself")
+
 print(response)
+
 ```
 
-## 故障排查
+## Troubleshooting
 
-1. **错误：未找到 API key**
-   - 检查环境变量是否正确设置
-   - 检查 config.yaml 中的 api_key 是否填写
-   - 确认环境变量名称是 `DEEPSEEK_API_KEY`
+1. **Error: API key not found**
 
-2. **错误：API 调用失败**
-   - 检查 API key 是否有效
-   - 检查网络连接
-   - 确认账户余额充足
+- Check if the environment variables are set correctly.
 
-3. **错误：模型不存在**
-   - 确认模型名称正确：`deepseek-chat` 或 `deepseek-coder`
-   - 检查 DeepSeek 是否更新了模型名称
+- Check the `api_key` in `config.yaml`. 1. **Error: API call failed**
 
+- Check if the API key is valid
+
+- Check network connection
+
+- Check account balance
+
+3. **Error: Model does not exist**
+
+- Check model name is correct: `deepseek-chat` or `deepseek-coder`
+
+- Check if DeepSeek has updated the model name
