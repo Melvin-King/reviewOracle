@@ -10,14 +10,35 @@ from collections import defaultdict
 class SynthesisAgent:
     """合成决策 Agent"""
     
-    def __init__(self, accept_threshold: float = 0.6, topics: List[str] = None):
+    def __init__(self, accept_threshold: float = 0.6, topics: List[str] = None, use_10_point_scale: bool = True):
         """
         Args:
-            accept_threshold: 接受阈值
+            accept_threshold: 接受阈值（原始范围 [-1, 1]，如果use_10_point_scale=True则自动转换为10分制）
             topics: 主题列表
+            use_10_point_scale: 是否使用10分制（默认True）
         """
-        self.accept_threshold = accept_threshold
+        self.use_10_point_scale = use_10_point_scale
+        if use_10_point_scale:
+            # 将阈值从 [-1, 1] 映射到 [0, 10]
+            # accept_threshold=0.6 -> 8.0分, reject_threshold=-0.6 -> 2.0分
+            self.accept_threshold_10 = (accept_threshold + 1) * 5  # 0.6 -> 8.0
+            self.reject_threshold_10 = (-accept_threshold + 1) * 5  # -0.6 -> 2.0
+            self.accept_threshold = accept_threshold  # 保留原始值用于内部计算
+        else:
+            self.accept_threshold = accept_threshold
         self.topics = topics or ["Novelty", "Experiments", "Writing", "Significance", "Reproducibility"]
+    
+    def score_to_10_point(self, score: float) -> float:
+        """
+        将分数从 [-1, 1] 映射到 [0, 10]
+        
+        Args:
+            score: 原始分数（范围 [-1, 1]）
+            
+        Returns:
+            10分制分数（范围 [0, 10]）
+        """
+        return (score + 1) * 5
     
     def sentiment_to_score(self, sentiment: str) -> float:
         """
@@ -124,17 +145,30 @@ class SynthesisAgent:
         else:
             score = 0.0
         
-        # 决策
-        if score >= self.accept_threshold:
-            decision = 'Accept'
-        elif score <= -self.accept_threshold:
-            decision = 'Reject'
+        # 转换为10分制（如果需要）
+        if self.use_10_point_scale:
+            score_10 = self.score_to_10_point(score)
+            # 决策基于10分制
+            if score_10 >= self.accept_threshold_10:
+                decision = 'Accept'
+            elif score_10 <= self.reject_threshold_10:
+                decision = 'Reject'
+            else:
+                decision = 'Neutral'
         else:
-            decision = 'Neutral'
+            score_10 = score
+            # 决策基于原始范围
+            if score >= self.accept_threshold:
+                decision = 'Accept'
+            elif score <= -self.accept_threshold:
+                decision = 'Reject'
+            else:
+                decision = 'Neutral'
         
         return {
             'topic': topic,
-            'score': score,
+            'score': score,  # 保留原始分数用于内部计算
+            'score_10': score_10,  # 10分制分数
             'num_claims': len(topic_claims),
             'weighted_sum': weighted_sum,
             'total_weight': total_weight,
@@ -202,12 +236,17 @@ class SynthesisAgent:
         # 显示每个主题的结果
         for result in topic_results:
             topic = result['topic']
-            score = result['score']
+            if self.use_10_point_scale:
+                score = result['score_10']
+                score_label = "Score (10-point scale)"
+            else:
+                score = result['score']
+                score_label = "Score"
             decision = result['decision']
             num_claims = result['num_claims']
             
             report_lines.append(f"Topic: {topic}")
-            report_lines.append(f"  Score: {score:.3f}")
+            report_lines.append(f"  {score_label}: {score:.2f}")
             report_lines.append(f"  Decision: {decision}")
             report_lines.append(f"  Number of claims: {num_claims}")
             
@@ -229,10 +268,16 @@ class SynthesisAgent:
         report_lines.append("")
         
         # 计算平均分数
-        valid_scores = [r['score'] for r in topic_results if r['num_claims'] > 0]
+        if self.use_10_point_scale:
+            valid_scores = [r['score_10'] for r in topic_results if r['num_claims'] > 0]
+            score_label = "Average Topic Score (10-point scale)"
+        else:
+            valid_scores = [r['score'] for r in topic_results if r['num_claims'] > 0]
+            score_label = "Average Topic Score"
+        
         if valid_scores:
             avg_score = sum(valid_scores) / len(valid_scores)
-            report_lines.append(f"Average Topic Score: {avg_score:.3f}")
+            report_lines.append(f"{score_label}: {avg_score:.2f}")
             
             # 统计决策
             decisions = [r['decision'] for r in topic_results if r['num_claims'] > 0]
@@ -242,13 +287,19 @@ class SynthesisAgent:
             
             report_lines.append(f"Topic Decisions: Accept={accept_count}, Reject={reject_count}, Neutral={neutral_count}")
             
-            # 总体建议
-            if avg_score >= self.accept_threshold:
-                overall_decision = "ACCEPT"
-            elif avg_score <= -self.accept_threshold:
-                overall_decision = "REJECT"
+            # 总体建议（只有 Accept 或 Reject 两种）
+            # 使用5.0作为分界线（10分制的中位数）
+            if self.use_10_point_scale:
+                if avg_score >= 5.0:
+                    overall_decision = "ACCEPT"
+                else:
+                    overall_decision = "REJECT"
             else:
-                overall_decision = "NEUTRAL / REVISE"
+                # 原始范围 [-1, 1]，0.0 作为分界线
+                if avg_score >= 0.0:
+                    overall_decision = "ACCEPT"
+                else:
+                    overall_decision = "REJECT"
             
             report_lines.append(f"Overall Recommendation: {overall_decision}")
         

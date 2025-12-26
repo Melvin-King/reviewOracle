@@ -4,7 +4,7 @@
 
 ```
 paperreview/
-├── README.md                          # 项目说明文档
+├── README.md                          # 项目说明文档（根目录）
 ├── requirements.txt                   # Python 依赖包
 ├── config.yaml                        # 配置文件（API keys, 参数等）
 │
@@ -113,7 +113,7 @@ paperreview/
   - `ExtractionAgent`: 主 Agent 类
   - `extract_claims(review_text)`: 提取原子观点
   - `classify_substantiation(claim)`: 分类证据类型
-- **输出格式**：符合 read.md 中定义的 JSON 格式
+- **输出格式**：符合 [read.md](read.md) 中定义的 JSON 格式
 
 #### `verification_agent.py` (Step 2)
 - **功能**：验证观点是否与论文一致
@@ -130,7 +130,7 @@ paperreview/
   - `calculate_hollowness(reviewer_claims)`: 计算空洞指数
   - `calculate_hallucination(reviewer_claims)`: 计算幻觉指数
   - `calculate_weight(reviewer_id, claims, verifications)`: 计算最终权重
-- **算法**：实现 read.md 中的权重计算公式
+- **算法**：实现 [read.md](read.md) 中的权重计算公式
 
 #### `synthesis_agent.py` (Step 4)
 - **功能**：生成最终的 Meta-Review 报告

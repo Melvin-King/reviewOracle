@@ -24,7 +24,7 @@
 
 ### 方案 3：手动准备数据
 
-按照 `MANUAL_DATA_GUIDE.md` 的说明手动准备数据。
+按照 [MANUAL_DATA_GUIDE.md](MANUAL_DATA_GUIDE.md) 的说明手动准备数据。
 
 ## 快速解决方案
 

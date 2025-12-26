@@ -5,9 +5,18 @@ Step 2: Fact Verification Agent (事实验证层)
 
 import json
 import re
+import sys
+import io
 from typing import List, Dict, Optional
 from ..utils.llm_client import LLMClient
 from ..utils.rag import SimpleRAG
+
+# 设置UTF-8编码输出（Windows兼容）
+if sys.platform == 'win32' and hasattr(sys.stdout, 'buffer'):
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+    except:
+        pass
 
 
 class VerificationAgent:
@@ -136,7 +145,9 @@ You must base your judgment solely on the evidence provided from the paper. Be o
             available_sections = list(paper_sections.keys())
             target_section = self.identify_relevant_section(claim, available_sections)
             if target_section:
-                print(f"    [Section Filter] Claim {claim_id} -> Section: {target_section}")
+                # 截断section名称以避免编码问题
+                section_display = target_section[:50] if len(target_section) > 50 else target_section
+                print(f"    [Section Filter] Claim {claim_id} -> Section: {section_display}")
         
         # 使用 RAG 检索相关段落（支持section过滤）
         # 检查 RAG 类型以使用正确的接口
@@ -229,7 +240,7 @@ Please provide your verification result in the following JSON format:
                 'confidence': 0.3
             }
         except Exception as e:
-            print(f"[ERROR] 验证观点 {claim_id} 时出错: {e}")
+            print(f"[ERROR] Error verifying claim {claim_id}: {e}")
             return {
                 'id': claim_id,
                 'verification_result': 'Partially_True',
@@ -257,7 +268,7 @@ Please provide your verification result in the following JSON format:
             if claim.get('substantiation_type') and claim.get('substantiation_type') != 'None'
         ]
         
-        print(f"[INFO] 需要验证 {len(claims_to_verify)} 个观点（共 {len(claims)} 个观点）")
+        print(f"[INFO] Verifying {len(claims_to_verify)} claims (out of {len(claims)} total claims)")
         
         for i, claim in enumerate(claims_to_verify, 1):
             print(f"  - Verifying claim {i}/{len(claims_to_verify)}: {claim.get('id', 'unknown')}")

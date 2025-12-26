@@ -4,7 +4,7 @@
 
 ## 项目结构
 
-详细的项目结构说明请参考 [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+详细的项目结构说明请参考 [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md)
 
 ## 快速开始
 
@@ -44,7 +44,7 @@ export DEEPSEEK_API_KEY="sk-your-api-key-here"
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-详细配置说明请参考 [DEEPSEEK_SETUP.md](DEEPSEEK_SETUP.md)
+详细配置说明请参考 [DEEPSEEK_SETUP.md](docs/DEEPSEEK_SETUP.md)
 
 ### 3. 下载数据
 
@@ -77,7 +77,9 @@ python scripts/run_pipeline.py --paper-id paper_001 --step 1
 3. **Weighting (偏差计算)**：计算 Reviewer 的可信度权重
 4. **Synthesis (合成决策)**：生成最终的 Meta-Review 报告
 
-详细设计请参考 [read.md](read.md)
+详细设计请参考：
+- [Pipeline 总览与技术亮点](docs/PIPELINE_OVERVIEW.md) ⭐ **推荐阅读**
+- [系统架构设计](docs/read.md)
 
 ## 开发状态
 

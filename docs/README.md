@@ -1,0 +1,35 @@
+# 文档目录
+
+本目录包含项目的所有文档。
+
+## 核心文档
+
+- **[PIPELINE_OVERVIEW.md](PIPELINE_OVERVIEW.md)** - Pipeline 总览与技术亮点 ⭐
+- **[read.md](read.md)** - 系统架构设计文档
+- **[PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)** - 项目结构说明
+- **[PIPELINE_DOCUMENTATION.md](PIPELINE_DOCUMENTATION.md)** - Pipeline 流程文档
+
+## RAG 系统文档
+
+- **[RAG_INTEGRATION_SUMMARY.md](RAG_INTEGRATION_SUMMARY.md)** - RAG 集成总结
+- **[RAG_INTEGRATION_EXPLANATION.md](RAG_INTEGRATION_EXPLANATION.md)** - RAG 集成说明
+- **[RAG_IMPLEMENTATION_AND_IMPROVEMENTS.md](RAG_IMPLEMENTATION_AND_IMPROVEMENTS.md)** - RAG 实现和改进
+- **[EMBEDDING_RAG_USAGE.md](EMBEDDING_RAG_USAGE.md)** - Embedding RAG 使用指南
+- **[HYBRID_RAG_EXPLANATION.md](HYBRID_RAG_EXPLANATION.md)** - 混合 RAG 说明
+- **[RERANKING_IMPLEMENTATION.md](RERANKING_IMPLEMENTATION.md)** - 重排序功能实现
+
+## 配置和设置
+
+- **[DEEPSEEK_SETUP.md](DEEPSEEK_SETUP.md)** - DeepSeek API 设置指南
+- **[MANUAL_DATA_GUIDE.md](MANUAL_DATA_GUIDE.md)** - 手动数据指南
+
+## 数据下载
+
+- **[DOWNLOAD_SOLUTION.md](DOWNLOAD_SOLUTION.md)** - 数据下载解决方案
+- **[REVIEW_DOWNLOAD_SUMMARY.md](REVIEW_DOWNLOAD_SUMMARY.md)** - Review 下载总结
+- **[REVIEW_ISSUES_FIXED.md](REVIEW_ISSUES_FIXED.md)** - Review 问题修复记录
+
+## 改进计划
+
+- **[IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md)** - 改进路线图
+
